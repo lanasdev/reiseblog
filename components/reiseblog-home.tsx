@@ -20,11 +20,15 @@ const TravelMap = dynamic(() => import("./travel-map"), {
 const MD_BREAKPOINT = 768
 
 function useIsDesktop() {
-  const [isDesktop, setIsDesktop] = useState<boolean | null>(null)
+  const [isDesktop, setIsDesktop] = useState<boolean | null>(() => {
+    if (typeof window === "undefined") {
+      return null
+    }
+    return window.matchMedia(`(min-width: ${MD_BREAKPOINT}px)`).matches
+  })
 
   useEffect(() => {
     const mql = window.matchMedia(`(min-width: ${MD_BREAKPOINT}px)`)
-    setIsDesktop(mql.matches)
     const handler = (e: MediaQueryListEvent) => setIsDesktop(e.matches)
     mql.addEventListener("change", handler)
     return () => mql.removeEventListener("change", handler)

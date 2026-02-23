@@ -1,4 +1,4 @@
-import { defineType, defineField } from "sanity"
+import { defineArrayMember, defineField, defineType } from "sanity"
 
 export const post = defineType({
   name: "post",
@@ -49,7 +49,7 @@ export const post = defineType({
       name: "tags",
       title: "Tags",
       type: "array",
-      of: [{ type: "reference", to: [{ type: "tag" }] }],
+      of: [defineArrayMember({ type: "reference", to: [{ type: "tag" }] })],
     }),
     defineField({
       name: "readTime",
@@ -60,7 +60,7 @@ export const post = defineType({
       name: "body",
       title: "Body",
       type: "array",
-      of: [{ type: "block" }],
+      of: [defineArrayMember({ type: "block" })],
     }),
   ],
   preview: {

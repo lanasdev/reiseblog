@@ -13,7 +13,7 @@ export default defineType({
       description: 'Links displayed on the header of your site.',
       type: 'array',
       of: [
-        {
+        defineArrayMember({
           title: 'Reference',
           type: 'reference',
           to: [
@@ -21,7 +21,7 @@ export default defineType({
             { type: 'page' },
             { type: 'post' },
           ],
-        },
+        }),
       ],
     }),
     defineField({

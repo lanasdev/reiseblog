@@ -1,55 +1,17 @@
-import { createClient } from "next-sanity"
 import type { BlogPost } from "./types"
 import { demoPosts } from "./demo-posts"
+import { client } from "@/sanity/lib/client"
+import {
+  PLACEHOLDER_IMAGE,
+  postBySlugQuery,
+  postsQuery,
+} from "@/sanity/lib/queries"
 
-const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID
-const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || "production"
-
-export const sanityClient = projectId
-  ? createClient({
-      projectId,
-      dataset,
-      apiVersion: "2024-01-01",
-      useCdn: true,
-    })
-  : null
-
-const PLACEHOLDER_IMAGE =
-  "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=600&h=400&fit=crop"
-
-const postsQuery = `*[_type == "post"] | order(date desc) {
-  _id,
-  title,
-  "slug": slug.current,
-  excerpt,
-  "coverImage": coalesce(coverImage.asset->url, $placeholderImage),
-  date,
-  location,
-  "tags": tags[]->{ _id, name, "slug": slug.current },
-  readTime
-}`
-
-const postBySlugQuery = `*[_type == "post" && slug.current == $slug][0] {
-  _id,
-  title,
-  "slug": slug.current,
-  excerpt,
-  "coverImage": coalesce(coverImage.asset->url, $placeholderImage),
-  date,
-  location,
-  "tags": tags[]->{ _id, name, "slug": slug.current },
-  readTime,
-  body
-}`
+const sharedParams = { placeholderImage: PLACEHOLDER_IMAGE }
 
 export async function getPosts(): Promise<BlogPost[]> {
-  if (!sanityClient) {
-    return demoPosts
-  }
   try {
-    const posts = await sanityClient.fetch(postsQuery, {
-      placeholderImage: PLACEHOLDER_IMAGE,
-    })
+    const posts = await client.fetch(postsQuery, sharedParams)
     return posts?.length ? posts : demoPosts
   } catch {
     return demoPosts
@@ -57,13 +19,10 @@ export async function getPosts(): Promise<BlogPost[]> {
 }
 
 export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
-  if (!sanityClient) {
-    return demoPosts.find((p) => p.slug === slug) ?? null
-  }
   try {
-    const post = await sanityClient.fetch(postBySlugQuery, {
+    const post = await client.fetch(postBySlugQuery, {
       slug,
-      placeholderImage: PLACEHOLDER_IMAGE,
+      ...sharedParams,
     })
     return post ?? demoPosts.find((p) => p.slug === slug) ?? null
   } catch {

@@ -4,7 +4,7 @@ const PLACEHOLDER_IMAGE =
   'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=600&h=400&fit=crop'
 
 export const homePageQuery = defineQuery(`
-  *[_type == "home"][0]{
+  *[_id == "home"][0]{
     _id,
     _type,
     overview,
@@ -24,7 +24,7 @@ export const pagesBySlugQuery = defineQuery(`
 `)
 
 export const settingsQuery = defineQuery(`
-  *[_type == "settings"][0]{
+  *[_id == "settings"][0]{
     _id,
     _type,
     footer,
@@ -47,6 +47,18 @@ export const postsQuery = defineQuery(`
     "slug": slug.current,
     excerpt,
     "coverImage": coalesce(coverImage.asset->url, $placeholderImage),
+    "coverImageData": coverImage{
+      asset->{
+        _id,
+        url,
+        metadata {
+          lqip,
+          dimensions { width, height }
+        }
+      },
+      hotspot,
+      crop
+    },
     date,
     location,
     "tags": tags[]->{ _id, name, "slug": slug.current },
@@ -61,6 +73,18 @@ export const postBySlugQuery = defineQuery(`
     "slug": slug.current,
     excerpt,
     "coverImage": coalesce(coverImage.asset->url, $placeholderImage),
+    "coverImageData": coverImage{
+      asset->{
+        _id,
+        url,
+        metadata {
+          lqip,
+          dimensions { width, height }
+        }
+      },
+      hotspot,
+      crop
+    },
     date,
     location,
     "tags": tags[]->{ _id, name, "slug": slug.current },
