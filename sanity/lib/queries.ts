@@ -18,6 +18,7 @@ export const pagesBySlugQuery = defineQuery(`
     _type,
     body,
     overview,
+    ogImage,
     title,
     "slug": slug.current,
   }
@@ -72,6 +73,7 @@ export const postBySlugQuery = defineQuery(`
     title,
     "slug": slug.current,
     excerpt,
+    "coverImageOg": coverImage,
     "coverImage": coalesce(coverImage.asset->url, $placeholderImage),
     "coverImageData": coverImage{
       asset->{

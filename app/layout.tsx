@@ -15,6 +15,9 @@ const playfair = Playfair_Display({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
+  ),
   title: 'Reiseblog - Travel Stories From Around the World',
   description: 'A travel blog mapping adventures and stories from destinations around the globe.',
   generator: 'v0.app',

@@ -24,6 +24,13 @@ export default defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: 'ogImage',
+      title: 'Open Graph Image',
+      type: 'image',
+      description: 'Custom image for social cards. Overrides the default from Settings.',
+      options: { hotspot: true },
+    }),
+    defineField({
       name: 'overview',
       description: 'Used for meta description tag and page subheader.',
       title: 'Overview',

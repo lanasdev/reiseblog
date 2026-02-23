@@ -1,6 +1,5 @@
 import { sanityFetch, SanityLive } from '@/sanity/lib/live'
-import { homePageQuery, settingsQuery } from '@/sanity/lib/queries'
-import { urlForOpenGraphImage } from '@/sanity/lib/utils'
+import { homePageQuery } from '@/sanity/lib/queries'
 import { draftMode } from 'next/headers'
 import { toPlainText } from 'next-sanity'
 import { VisualEditing } from 'next-sanity/visual-editing'
@@ -11,12 +10,11 @@ import { DraftModeToast } from './DraftModeToast'
 
 export async function generateMetadata() {
   try {
-    const [{ data: settings }, { data: homePage }] = await Promise.all([
-      sanityFetch({ query: settingsQuery, stega: false }),
-      sanityFetch({ query: homePageQuery, stega: false }),
-    ])
+    const { data: homePage } = await sanityFetch({
+      query: homePageQuery,
+      stega: false,
+    })
 
-    const ogImage = urlForOpenGraphImage(settings?.ogImage)
     return {
       title: homePage?.title
         ? {
@@ -27,9 +25,6 @@ export async function generateMetadata() {
       description: homePage?.overview
         ? toPlainText(homePage.overview)
         : 'A travel blog mapping adventures and stories from destinations around the globe.',
-      openGraph: {
-        images: ogImage ? [ogImage] : [],
-      },
     }
   } catch {
     return {

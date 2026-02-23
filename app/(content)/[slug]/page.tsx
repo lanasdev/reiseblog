@@ -12,9 +12,10 @@ type Props = {
 
 export async function generateMetadata({ params }: Props) {
   try {
+    const { slug } = await params
     const { data: page } = await sanityFetch({
       query: pagesBySlugQuery,
-      params,
+      params: { slug },
       stega: false,
     })
     return {
