@@ -49,7 +49,7 @@ export const postsQuery = defineQuery(`
     "coverImage": coalesce(coverImage.asset->url, $placeholderImage),
     date,
     location,
-    category,
+    "tags": tags[]->{ _id, name, "slug": slug.current },
     readTime
   }
 `)
@@ -63,7 +63,7 @@ export const postBySlugQuery = defineQuery(`
     "coverImage": coalesce(coverImage.asset->url, $placeholderImage),
     date,
     location,
-    category,
+    "tags": tags[]->{ _id, name, "slug": slug.current },
     readTime,
     body
   }

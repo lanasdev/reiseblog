@@ -71,14 +71,21 @@ export default function PostDetail({ post, relatedPosts }: PostDetailProps) {
         {/* Title overlay */}
         <div className="absolute bottom-0 left-0 right-0 p-5 md:p-12">
           <div className="mx-auto max-w-3xl">
-            <motion.span
-              className="mb-2 inline-block rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground uppercase tracking-wider md:mb-3"
+            <motion.div
+              className="mb-2 flex flex-wrap gap-1.5 md:mb-3"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              {post.category}
-            </motion.span>
+              {post.tags?.map((tag) => (
+                <span
+                  key={tag._id}
+                  className="inline-block rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground uppercase tracking-wider"
+                >
+                  {tag.name}
+                </span>
+              ))}
+            </motion.div>
             <motion.h1
               className="font-serif text-2xl font-bold leading-tight text-primary-foreground sm:text-3xl md:text-5xl text-balance"
               initial={{ opacity: 0, y: 20 }}
@@ -236,9 +243,16 @@ export default function PostDetail({ post, relatedPosts }: PostDetailProps) {
                       />
                     </div>
                     <div className="p-3 md:p-4">
-                      <span className="text-[10px] font-medium text-primary uppercase tracking-wider">
-                        {related.category}
-                      </span>
+                      <div className="flex flex-wrap gap-1">
+                        {related.tags?.map((tag) => (
+                          <span
+                            key={tag._id}
+                            className="text-[10px] font-medium text-primary uppercase tracking-wider"
+                          >
+                            {tag.name}
+                          </span>
+                        ))}
+                      </div>
                       <h3 className="mt-1 font-serif text-sm font-semibold text-card-foreground line-clamp-2">
                         {related.title}
                       </h3>

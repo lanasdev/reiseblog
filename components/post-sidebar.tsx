@@ -13,8 +13,6 @@ interface PostSidebarProps {
   onPostClick: (postId: string) => void
 }
 
-const categories = ["All", "Culture", "Nature", "Food", "Adventure", "City", "Relaxation"]
-
 export default function PostSidebar({
   posts,
   activePostId,
@@ -22,16 +20,21 @@ export default function PostSidebar({
   onPostClick,
 }: PostSidebarProps) {
   const [searchQuery, setSearchQuery] = useState("")
-  const [activeCategory, setActiveCategory] = useState("All")
+  const [activeTag, setActiveTag] = useState("All")
+
+  const allTags = [
+    "All",
+    ... [...new Set(posts.flatMap((p) => p.tags ?? []).map((t) => t.name))].sort(),
+  ]
 
   const filteredPosts = posts.filter((post) => {
     const matchesSearch =
       post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       post.location.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       post.location.country.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesCategory =
-      activeCategory === "All" || post.category === activeCategory
-    return matchesSearch && matchesCategory
+    const matchesTag =
+      activeTag === "All" || post.tags?.some((t) => t.name === activeTag)
+    return matchesSearch && matchesTag
   })
 
   return (
@@ -67,6 +70,7 @@ export default function PostSidebar({
           />
           {searchQuery && (
             <button
+              type="button"
               onClick={() => setSearchQuery("")}
               className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
               aria-label="Clear search"
@@ -77,20 +81,21 @@ export default function PostSidebar({
         </div>
       </div>
 
-      {/* Categories */}
+      {/* Tags */}
       <div className="flex-shrink-0 border-b border-border px-4 py-2.5 md:px-5 md:py-3">
         <div className="flex flex-nowrap gap-1.5 overflow-x-auto scrollbar-none md:flex-wrap">
-          {categories.map((cat) => (
+          {allTags.map((tag) => (
             <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
+              type="button"
+              key={tag}
+              onClick={() => setActiveTag(tag)}
               className={`flex-shrink-0 rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors ${
-                activeCategory === cat
+                activeTag === tag
                   ? "bg-primary text-primary-foreground"
                   : "bg-secondary text-secondary-foreground hover:bg-primary/10 hover:text-primary"
               }`}
             >
-              {cat}
+              {tag}
             </button>
           ))}
         </div>

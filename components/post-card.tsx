@@ -59,10 +59,15 @@ export default function PostCard({
 
         <div className="flex min-w-0 flex-1 flex-col justify-between">
           <div>
-            <div className="mb-1 flex items-center gap-1.5">
-              <span className="inline-block rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium tracking-wide text-primary uppercase">
-                {post.category}
-              </span>
+            <div className="mb-1 flex flex-wrap items-center gap-1.5">
+              {post.tags?.map((tag) => (
+                <span
+                  key={tag._id}
+                  className="inline-block rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium tracking-wide text-primary uppercase"
+                >
+                  {tag.name}
+                </span>
+              ))}
             </div>
             <h3 className="font-serif text-sm font-semibold leading-tight text-card-foreground line-clamp-2">
               {post.title}

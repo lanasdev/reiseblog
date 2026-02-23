@@ -18,6 +18,7 @@ import page from '@/sanity/schemas/documents/page'
 import home from '@/sanity/schemas/singletons/home'
 import settings from '@/sanity/schemas/singletons/settings'
 import { post } from '@/sanity/schemaTypes/post'
+import { tag } from '@/sanity/schemaTypes/tag'
 import { visionTool } from '@sanity/vision'
 import { defineConfig } from 'sanity'
 import { unsplashImageAsset } from 'sanity-plugin-asset-source-unsplash'
@@ -37,6 +38,7 @@ export default defineConfig({
       home,
       settings,
       post,
+      tag,
       page,
       duration,
       milestone,

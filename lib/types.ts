@@ -23,7 +23,7 @@ export interface BlogPost {
     lat: number
     lng: number
   }
-  category: string
+  tags?: { _id: string; name: string; slug: string }[]
   readTime: number
   body?: PortableTextBlock[]
 }

@@ -16,7 +16,7 @@ export const demoPosts: BlogPost[] = [
       lat: 31.6295,
       lng: -7.9811,
     },
-    category: "Culture",
+    tags: [{ _id: "culture", name: "Culture", slug: "culture" }],
     readTime: 7,
   },
   {
@@ -34,7 +34,7 @@ export const demoPosts: BlogPost[] = [
       lat: 69.6492,
       lng: 18.9553,
     },
-    category: "Nature",
+    tags: [{ _id: "nature", name: "Nature", slug: "nature" }],
     readTime: 5,
   },
   {
@@ -52,7 +52,7 @@ export const demoPosts: BlogPost[] = [
       lat: 13.7563,
       lng: 100.5018,
     },
-    category: "Food",
+    tags: [{ _id: "food", name: "Food", slug: "food" }],
     readTime: 6,
   },
   {
@@ -70,7 +70,7 @@ export const demoPosts: BlogPost[] = [
       lat: 46.4102,
       lng: 11.8441,
     },
-    category: "Adventure",
+    tags: [{ _id: "adventure", name: "Adventure", slug: "adventure" }],
     readTime: 8,
   },
   {
@@ -88,7 +88,7 @@ export const demoPosts: BlogPost[] = [
       lat: 35.0116,
       lng: 135.7681,
     },
-    category: "Culture",
+    tags: [{ _id: "culture", name: "Culture", slug: "culture" }],
     readTime: 6,
   },
   {
@@ -106,7 +106,7 @@ export const demoPosts: BlogPost[] = [
       lat: 36.3932,
       lng: 25.4615,
     },
-    category: "Relaxation",
+    tags: [{ _id: "relaxation", name: "Relaxation", slug: "relaxation" }],
     readTime: 4,
   },
   {
@@ -124,7 +124,7 @@ export const demoPosts: BlogPost[] = [
       lat: -50.3402,
       lng: -72.2647,
     },
-    category: "Adventure",
+    tags: [{ _id: "adventure", name: "Adventure", slug: "adventure" }],
     readTime: 9,
   },
   {
@@ -142,7 +142,7 @@ export const demoPosts: BlogPost[] = [
       lat: 38.7223,
       lng: -9.1393,
     },
-    category: "City",
+    tags: [{ _id: "city", name: "City", slug: "city" }],
     readTime: 5,
   },
 ]

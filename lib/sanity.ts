@@ -25,7 +25,7 @@ const postsQuery = `*[_type == "post"] | order(date desc) {
   "coverImage": coalesce(coverImage.asset->url, $placeholderImage),
   date,
   location,
-  category,
+  "tags": tags[]->{ _id, name, "slug": slug.current },
   readTime
 }`
 
@@ -37,7 +37,7 @@ const postBySlugQuery = `*[_type == "post" && slug.current == $slug][0] {
   "coverImage": coalesce(coverImage.asset->url, $placeholderImage),
   date,
   location,
-  category,
+  "tags": tags[]->{ _id, name, "slug": slug.current },
   readTime,
   body
 }`
