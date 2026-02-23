@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState, useCallback, useEffect } from "react"
 import dynamic from "next/dynamic"
 import type { BlogPost } from "@/lib/types"
 import PostSidebar from "./post-sidebar"
@@ -17,12 +17,29 @@ const TravelMap = dynamic(() => import("./travel-map"), {
   ),
 })
 
+const MD_BREAKPOINT = 768
+
+function useIsDesktop() {
+  const [isDesktop, setIsDesktop] = useState<boolean | null>(null)
+
+  useEffect(() => {
+    const mql = window.matchMedia(`(min-width: ${MD_BREAKPOINT}px)`)
+    setIsDesktop(mql.matches)
+    const handler = (e: MediaQueryListEvent) => setIsDesktop(e.matches)
+    mql.addEventListener("change", handler)
+    return () => mql.removeEventListener("change", handler)
+  }, [])
+
+  return isDesktop
+}
+
 interface ReiseblogHomeProps {
   posts: BlogPost[]
 }
 
 export default function ReiseblogHome({ posts }: ReiseblogHomeProps) {
   const [activePostId, setActivePostId] = useState<string | null>(null)
+  const isDesktop = useIsDesktop()
 
   const handlePinClick = useCallback((postId: string) => {
     setActivePostId((prev) => (prev === postId ? null : postId))
@@ -36,51 +53,55 @@ export default function ReiseblogHome({ posts }: ReiseblogHomeProps) {
     setActivePostId(postId)
   }, [])
 
-  return (
-    <>
-      {/* Desktop: golden ratio side-by-side */}
-      <div className="hidden h-screen w-screen overflow-hidden bg-background md:flex">
-        {/* Sidebar - Golden ratio: 38.2% */}
+  const map = (
+    <TravelMap
+      posts={posts}
+      activePostId={activePostId}
+      onPinClick={handlePinClick}
+    />
+  )
+
+  const sidebar = (
+    <PostSidebar
+      posts={posts}
+      activePostId={activePostId}
+      onPostHover={handlePostHover}
+      onPostClick={handlePostClick}
+    />
+  )
+
+  if (isDesktop === null) {
+    return (
+      <div className="flex h-screen w-screen items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-3">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+          <p className="text-sm text-muted-foreground">Karte wird geladen...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (isDesktop) {
+    return (
+      <div className="flex h-screen w-screen overflow-hidden bg-background">
         <div className="flex h-full w-[38.2%] flex-col border-r border-border">
-          <PostSidebar
-            posts={posts}
-            activePostId={activePostId}
-            onPostHover={handlePostHover}
-            onPostClick={handlePostClick}
-          />
+          {sidebar}
         </div>
-
-        {/* Map - Golden ratio: 61.8% */}
         <div className="flex h-full w-[61.8%]">
-          <TravelMap
-            posts={posts}
-            activePostId={activePostId}
-            onPinClick={handlePinClick}
-          />
+          {map}
         </div>
       </div>
+    )
+  }
 
-      {/* Mobile: stacked layout - map on top, posts below */}
-      <div className="flex min-h-screen flex-col bg-background md:hidden">
-        {/* Map section - fills roughly top 45% of viewport */}
-        <div className="relative h-[45vh] w-full flex-shrink-0 border-b border-border">
-          <TravelMap
-            posts={posts}
-            activePostId={activePostId}
-            onPinClick={handlePinClick}
-          />
-        </div>
-
-        {/* Post list section - scrollable below */}
-        <div className="flex flex-1 flex-col overflow-hidden">
-          <PostSidebar
-            posts={posts}
-            activePostId={activePostId}
-            onPostHover={handlePostHover}
-            onPostClick={handlePostClick}
-          />
-        </div>
+  return (
+    <div className="flex min-h-screen flex-col bg-background">
+      <div className="relative h-[45vh] w-full flex-shrink-0 border-b border-border">
+        {map}
       </div>
-    </>
+      <div className="flex flex-1 flex-col overflow-hidden">
+        {sidebar}
+      </div>
+    </div>
   )
 }

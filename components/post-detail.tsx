@@ -1,6 +1,7 @@
 "use client"
 
 import type { BlogPost } from "@/lib/types"
+import { PortableText } from "next-sanity"
 import {
   ArrowLeft,
   MapPin,
@@ -122,24 +123,61 @@ export default function PostDetail({ post, relatedPosts }: PostDetailProps) {
 
         <div className="my-8 h-px w-full bg-border md:my-10" />
 
-        <div className="space-y-6 text-base leading-relaxed text-foreground/80 md:text-lg">
-          <p>
-            {`The journey to ${post.location.name} was one that had been on my list for years. There's something about 
-            arriving in a place you've only ever seen in photographs — the way reality fills in all the gaps your 
-            imagination left open. The light is different, the air carries unfamiliar scents, and every corner holds 
-            the promise of a story waiting to be told.`}
-          </p>
-          <p>
-            {`I spent my first day wandering without a map, letting the streets of ${post.location.name} guide me. 
-            This kind of aimless exploration is my favorite part of travel — the moments between plans, when you 
-            stumble upon a hidden courtyard or a tiny cafe where the owner insists you try something you can't pronounce.`}
-          </p>
-          <p>
-            {`What struck me most about ${post.location.country} was the way its people carry their history. 
-            It's not locked behind glass in museums (though those are worth visiting too) — it lives in the daily 
-            rituals, the food, the architecture that has weathered centuries. Every building, every dish, every 
-            greeting carries the weight and warmth of generations.`}
-          </p>
+        <div className="space-y-6 text-base leading-relaxed text-foreground/80 md:text-lg prose prose-lg max-w-none prose-headings:font-serif prose-p:leading-relaxed">
+          {post.body && post.body.length > 0 ? (
+            <PortableText
+              value={post.body}
+              components={{
+                block: {
+                  h2: ({ children }) => (
+                    <h2 className="font-serif text-xl font-semibold text-foreground mt-8 mb-4">
+                      {children}
+                    </h2>
+                  ),
+                  normal: ({ children }) => (
+                    <p className="mb-4">{children}</p>
+                  ),
+                  blockquote: ({ children }) => (
+                    <blockquote className="border-l-4 border-primary pl-4 italic my-4">
+                      {children}
+                    </blockquote>
+                  ),
+                },
+                list: {
+                  bullet: ({ children }) => (
+                    <ul className="list-disc ml-4 space-y-1">{children}</ul>
+                  ),
+                  number: ({ children }) => (
+                    <ol className="list-decimal ml-4 space-y-1">{children}</ol>
+                  ),
+                },
+                marks: {
+                  link: ({ children, value }) => (
+                    <a
+                      href={value?.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary underline hover:no-underline"
+                    >
+                      {children}
+                    </a>
+                  ),
+                },
+              }}
+            />
+          ) : (
+            <>
+              <p>
+                {`The journey to ${post.location.name} was one that had been on my list for years. There's something about 
+                arriving in a place you've only ever seen in photographs — the way reality fills in all the gaps your 
+                imagination left open.`}
+              </p>
+              <p>
+                {`I spent my first day wandering without a map, letting the streets of ${post.location.name} guide me. 
+                This kind of aimless exploration is my favorite part of travel.`}
+              </p>
+            </>
+          )}
         </div>
 
         {/* Map */}

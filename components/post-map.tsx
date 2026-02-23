@@ -10,15 +10,34 @@ interface PostMapProps {
   name: string
 }
 
+function isValidLatLng(lat: unknown, lng: unknown): boolean {
+  const latNum = Number(lat)
+  const lngNum = Number(lng)
+  return (
+    !Number.isNaN(latNum) &&
+    !Number.isNaN(lngNum) &&
+    Number.isFinite(latNum) &&
+    Number.isFinite(lngNum) &&
+    latNum >= -90 &&
+    latNum <= 90 &&
+    lngNum >= -180 &&
+    lngNum <= 180
+  )
+}
+
 export default function PostMap({ lat, lng, name }: PostMapProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<L.Map | null>(null)
 
+  const valid = isValidLatLng(lat, lng)
+  const safeLat = valid ? Number(lat) : 0
+  const safeLng = valid ? Number(lng) : 0
+
   useEffect(() => {
-    if (!containerRef.current || mapRef.current) return
+    if (!valid || !containerRef.current || mapRef.current) return
 
     const map = L.map(containerRef.current, {
-      center: [lat, lng],
+      center: [safeLat, safeLng],
       zoom: 8,
       zoomControl: false,
       attributionControl: false,
@@ -44,7 +63,7 @@ export default function PostMap({ lat, lng, name }: PostMapProps) {
       iconAnchor: [14, 28],
     })
 
-    L.marker([lat, lng], { icon })
+    L.marker([safeLat, safeLng], { icon })
       .addTo(map)
       .bindPopup(`<strong>${name}</strong>`)
 
@@ -54,7 +73,15 @@ export default function PostMap({ lat, lng, name }: PostMapProps) {
       map.remove()
       mapRef.current = null
     }
-  }, [lat, lng, name])
+  }, [valid, safeLat, safeLng, name])
+
+  if (!valid) {
+    return (
+      <div className="flex h-full w-full items-center justify-center rounded-lg border border-border bg-muted/30 text-sm text-muted-foreground">
+        Keine Koordinaten verfügbar
+      </div>
+    )
+  }
 
   return <div ref={containerRef} className="h-full w-full" />
 }

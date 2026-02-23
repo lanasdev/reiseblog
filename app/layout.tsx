@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { DM_Sans, Playfair_Display } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
+import { TooltipProvider } from '@/components/ui/tooltip'
 import './globals.css'
 
 const dmSans = DM_Sans({
@@ -48,7 +49,7 @@ export default function RootLayout({
   return (
     <html lang="de">
       <body className={`${dmSans.variable} ${playfair.variable} font-sans antialiased`}>
-        {children}
+        <TooltipProvider>{children}</TooltipProvider>
         <Analytics />
       </body>
     </html>

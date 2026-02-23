@@ -29,15 +29,17 @@ function createPinIcon(isActive: boolean) {
 }
 
 function isValidLatLng(lat: unknown, lng: unknown): boolean {
+  const latNum = Number(lat)
+  const lngNum = Number(lng)
   return (
-    typeof lat === "number" &&
-    typeof lng === "number" &&
-    isFinite(lat) &&
-    isFinite(lng) &&
-    lat >= -90 &&
-    lat <= 90 &&
-    lng >= -180 &&
-    lng <= 180
+    !Number.isNaN(latNum) &&
+    !Number.isNaN(lngNum) &&
+    Number.isFinite(latNum) &&
+    Number.isFinite(lngNum) &&
+    latNum >= -90 &&
+    latNum <= 90 &&
+    lngNum >= -180 &&
+    lngNum <= 180
   )
 }
 
@@ -58,6 +60,9 @@ export default function TravelMap({
 
   const initMap = useCallback(() => {
     if (!containerRef.current || mapRef.current) return
+
+    const { offsetWidth, offsetHeight } = containerRef.current
+    if (offsetWidth === 0 || offsetHeight === 0) return
 
     const map = L.map(containerRef.current, {
       center: [30, 20],
@@ -85,9 +90,11 @@ export default function TravelMap({
       .addTo(map)
 
     posts.forEach((post) => {
-      if (!isValidLatLng(post.location.lat, post.location.lng)) return
+      const lat = post.location?.lat
+      const lng = post.location?.lng
+      if (!isValidLatLng(lat, lng)) return
 
-      const marker = L.marker([post.location.lat, post.location.lng], {
+      const marker = L.marker([Number(lat), Number(lng)], {
         icon: createPinIcon(false),
       })
         .addTo(map)
@@ -97,8 +104,8 @@ export default function TravelMap({
 
       marker.bindTooltip(
         `<div style="font-family: var(--font-sans); padding: 2px 4px;">
-          <strong>${post.location.name}</strong><br/>
-          <span style="opacity: 0.7; font-size: 12px;">${post.title}</span>
+          <strong>${post.location?.name ?? ""}</strong><br/>
+          <span style="opacity: 0.7; font-size: 12px;">${post.title ?? ""}</span>
         </div>`,
         { direction: "top", offset: [0, -20] }
       )
@@ -116,7 +123,21 @@ export default function TravelMap({
 
   useEffect(() => {
     initMap()
+
+    const container = containerRef.current
+    if (!container) return
+
+    const observer = new ResizeObserver(() => {
+      if (!mapRef.current) {
+        initMap()
+      } else {
+        mapRef.current.invalidateSize()
+      }
+    })
+    observer.observe(container)
+
     return () => {
+      observer.disconnect()
       if (mapRef.current) {
         mapRef.current.remove()
         mapRef.current = null
@@ -140,12 +161,14 @@ export default function TravelMap({
 
     if (activePostId) {
       const activePost = posts.find((p) => p._id === activePostId)
-      if (activePost && isValidLatLng(activePost.location.lat, activePost.location.lng)) {
+      const lat = activePost?.location?.lat
+      const lng = activePost?.location?.lng
+      if (activePost && isValidLatLng(lat, lng)) {
         const zoom = mapRef.current.getZoom()
-        const targetZoom = isFinite(zoom) ? Math.max(zoom, 5) : 5
+        const targetZoom = Number.isFinite(zoom) ? Math.max(zoom, 5) : 5
         try {
           mapRef.current.flyTo(
-            [activePost.location.lat, activePost.location.lng],
+            [Number(lat), Number(lng)],
             targetZoom,
             { duration: 1.2 }
           )

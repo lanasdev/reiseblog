@@ -14,12 +14,15 @@ export const sanityClient = projectId
     })
   : null
 
+const PLACEHOLDER_IMAGE =
+  "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=600&h=400&fit=crop"
+
 const postsQuery = `*[_type == "post"] | order(date desc) {
   _id,
   title,
   "slug": slug.current,
   excerpt,
-  "coverImage": coverImage.asset->url,
+  "coverImage": coalesce(coverImage.asset->url, $placeholderImage),
   date,
   location,
   category,
@@ -31,7 +34,7 @@ const postBySlugQuery = `*[_type == "post" && slug.current == $slug][0] {
   title,
   "slug": slug.current,
   excerpt,
-  "coverImage": coverImage.asset->url,
+  "coverImage": coalesce(coverImage.asset->url, $placeholderImage),
   date,
   location,
   category,
@@ -44,7 +47,9 @@ export async function getPosts(): Promise<BlogPost[]> {
     return demoPosts
   }
   try {
-    const posts = await sanityClient.fetch(postsQuery)
+    const posts = await sanityClient.fetch(postsQuery, {
+      placeholderImage: PLACEHOLDER_IMAGE,
+    })
     return posts?.length ? posts : demoPosts
   } catch {
     return demoPosts
@@ -56,7 +61,10 @@ export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
     return demoPosts.find((p) => p.slug === slug) ?? null
   }
   try {
-    const post = await sanityClient.fetch(postBySlugQuery, { slug })
+    const post = await sanityClient.fetch(postBySlugQuery, {
+      slug,
+      placeholderImage: PLACEHOLDER_IMAGE,
+    })
     return post ?? demoPosts.find((p) => p.slug === slug) ?? null
   } catch {
     return demoPosts.find((p) => p.slug === slug) ?? null
