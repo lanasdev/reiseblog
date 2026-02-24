@@ -152,6 +152,13 @@ export default function PostSidebar({
           </div>
         </AnimatePresence>
       </div>
+
+      {/* Footer */}
+      <footer className="flex-shrink-0 border-t border-border px-4 py-2 md:px-5">
+        <p className="text-[10px] text-muted-foreground">
+          Geschichten von unterwegs
+        </p>
+      </footer>
     </aside>
   )
 }
