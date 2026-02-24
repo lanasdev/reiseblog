@@ -1,3 +1,4 @@
+import { GeopointInput } from "@/sanity/components/GeopointInput"
 import { defineArrayMember, defineField, defineType } from "sanity"
 
 export const post = defineType({
@@ -41,8 +42,27 @@ export const post = defineType({
       fields: [
         defineField({ name: "name", title: "Place Name", type: "string" }),
         defineField({ name: "country", title: "Country", type: "string" }),
-        defineField({ name: "lat", title: "Latitude", type: "number" }),
-        defineField({ name: "lng", title: "Longitude", type: "number" }),
+        defineField({
+          name: "coordinates",
+          title: "Coordinates",
+          type: "geopoint",
+          description: "Click on the map to set the location",
+          components: { input: GeopointInput },
+        }),
+        defineField({
+          name: "lat",
+          title: "Latitude",
+          type: "number",
+          hidden: true,
+          readOnly: true,
+        }),
+        defineField({
+          name: "lng",
+          title: "Longitude",
+          type: "number",
+          hidden: true,
+          readOnly: true,
+        }),
       ],
     }),
     defineField({

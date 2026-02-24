@@ -61,7 +61,11 @@ export const postsQuery = defineQuery(`
       crop
     },
     date,
-    location,
+    "location": {
+      ...location,
+      "lat": coalesce(location.coordinates.lat, location.lat),
+      "lng": coalesce(location.coordinates.lng, location.lng)
+    },
     "tags": tags[]->{ _id, name, "slug": slug.current },
     readTime
   }
@@ -88,7 +92,11 @@ export const postBySlugQuery = defineQuery(`
       crop
     },
     date,
-    location,
+    "location": {
+      ...location,
+      "lat": coalesce(location.coordinates.lat, location.lat),
+      "lng": coalesce(location.coordinates.lng, location.lng)
+    },
     "tags": tags[]->{ _id, name, "slug": slug.current },
     readTime,
     body
@@ -113,7 +121,11 @@ export const relatedPostsQuery = defineQuery(`
       hotspot,
       crop
     },
-    location,
+    "location": {
+      ...location,
+      "lat": coalesce(location.coordinates.lat, location.lat),
+      "lng": coalesce(location.coordinates.lng, location.lng)
+    },
     "tags": tags[]->{ _id, name, "slug": slug.current },
   }
 `)
