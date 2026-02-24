@@ -14,4 +14,8 @@ export default defineCliConfig({
       alias: { '@': __dirname },
     },
   },
+  deployment: {
+    appId: 'i8p1plzw8xy88h2i5lrz0dcd',
+    autoUpdates: true
+  }
 })
