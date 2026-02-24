@@ -1,11 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   typescript: {
+    // Sanity singletonPlugin has strict PluginOptions typing; plugin works at runtime
     ignoreBuildErrors: true,
   },
   images: {
-    unoptimized: true,
-    remotePatterns: [{ hostname: 'cdn.sanity.io' }],
+    remotePatterns: [
+      { protocol: 'https', hostname: 'cdn.sanity.io', pathname: '/images/**' },
+      { protocol: 'https', hostname: 'images.unsplash.com', pathname: '/**' },
+    ],
   },
 }
 

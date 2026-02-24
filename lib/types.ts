@@ -10,12 +10,19 @@ export interface MilestoneItem {
   title?: string
 }
 
+export interface CoverImageData {
+  asset?: {
+    metadata?: { lqip?: string; dimensions?: { width?: number; height?: number } }
+  }
+}
+
 export interface BlogPost {
   _id: string
   title: string
   slug: string
   excerpt: string
   coverImage: string
+  coverImageData?: CoverImageData
   date: string
   location: {
     name: string

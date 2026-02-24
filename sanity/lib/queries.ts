@@ -95,6 +95,29 @@ export const postBySlugQuery = defineQuery(`
   }
 `)
 
+export const relatedPostsQuery = defineQuery(`
+  *[_type == "post" && _id != $currentId] | order(date desc) [0...3] {
+    _id,
+    title,
+    "slug": slug.current,
+    "coverImage": coalesce(coverImage.asset->url, $placeholderImage),
+    "coverImageData": coverImage{
+      asset->{
+        _id,
+        url,
+        metadata {
+          lqip,
+          dimensions { width, height }
+        }
+      },
+      hotspot,
+      crop
+    },
+    location,
+    "tags": tags[]->{ _id, name, "slug": slug.current },
+  }
+`)
+
 export const slugsByTypeQuery = defineQuery(`
   *[_type == $type && defined(slug.current)]{"slug": slug.current}
 `)

@@ -2,6 +2,7 @@
 
 import type { BlogPost } from "@/lib/types"
 import { MapPin, Clock, Calendar } from "lucide-react"
+import Image from "next/image"
 import Link from "next/link"
 import { motion } from "motion/react"
 
@@ -48,11 +49,14 @@ export default function PostCard({
     >
       <div className="flex gap-3 p-3">
         <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-md">
-          <img
+          <Image
             src={post.coverImage}
             alt={post.title}
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-            loading="lazy"
+            fill
+            sizes="80px"
+            className="object-cover transition-transform duration-500 group-hover:scale-110"
+            placeholder={post.coverImageData?.asset?.metadata?.lqip ? "blur" : "empty"}
+            blurDataURL={post.coverImageData?.asset?.metadata?.lqip}
           />
           <div className="absolute inset-0 bg-foreground/5" />
         </div>

@@ -1,6 +1,6 @@
 import ImageBox from '@/components/ImageBox'
 import { TimelineSection } from '@/components/TimelineSection'
-import type { PathSegment } from '@sanity/client/csm'
+import type { PathSegment } from 'sanity'
 import {
   PortableText,
   type PortableTextBlock,

@@ -1,8 +1,9 @@
+import type { Image as SanityImage } from 'sanity'
 import { urlForImage } from '@/sanity/lib/utils'
 import Image from 'next/image'
 
 interface ImageBoxProps {
-  image?: { asset?: { _ref?: string } }
+  image?: SanityImage | { asset?: { _ref?: string } }
   alt?: string
   width?: number
   height?: number
@@ -21,7 +22,7 @@ export default function ImageBox({
   ...props
 }: ImageBoxProps) {
   const imageUrl =
-    image && urlForImage(image)?.height(height).width(width).fit('crop').url()
+    image && urlForImage(image as SanityImage)?.height(height).width(width).fit('crop').url()
 
   return (
     <div

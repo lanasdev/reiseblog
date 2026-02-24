@@ -18,7 +18,9 @@ export function DraftModeToast({ action }: { action: () => Promise<void> }) {
           onClick: () => toast.promise(action(), { loading: 'Disabling draft mode…' }),
         },
       })
-      return () => toast.dismiss(toastId)
+      return () => {
+        toast.dismiss(toastId)
+      }
     }
   }, [action, isPresentationTool])
 

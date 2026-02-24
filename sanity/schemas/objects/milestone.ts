@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { defineField, defineType } from 'sanity'
 
 export default defineType({
@@ -38,7 +39,7 @@ export default defineType({
     select: { duration: 'duration', image: 'image', title: 'title' },
     prepare({ duration, image, title }: { duration?: { start?: string; end?: string }; image?: unknown; title?: string }) {
       return {
-        media: image,
+        media: image as ReactNode,
         subtitle: [
           duration?.start && new Date(duration.start).getFullYear(),
           duration?.end && new Date(duration.end).getFullYear(),

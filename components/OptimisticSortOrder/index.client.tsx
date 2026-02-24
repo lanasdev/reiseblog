@@ -1,6 +1,6 @@
 'use client'
 
-import type { StudioPathLike } from '@sanity/client/csm'
+import type { PathSegment } from 'sanity'
 import { get } from '@sanity/util/paths'
 import { useOptimistic } from 'next-sanity/hooks'
 import { Children, isValidElement } from 'react'
@@ -8,7 +8,7 @@ import { Children, isValidElement } from 'react'
 export interface OptimisticSortOrderProps {
   children: React.ReactNode
   id: string
-  path: StudioPathLike
+  path: PathSegment[]
 }
 
 export default function OptimisticSortOrder(props: OptimisticSortOrderProps) {

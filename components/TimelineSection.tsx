@@ -1,7 +1,7 @@
 import { TimelineItem } from '@/components/TimelineItem'
 import type { MilestoneItem } from '@/lib/types'
 import { studioUrl } from '@/sanity/lib/api'
-import type { StudioPathLike } from '@sanity/client/csm'
+import type { PathSegment } from 'sanity'
 import { createDataAttribute, stegaClean } from 'next-sanity'
 import { OptimisticSortOrder } from './OptimisticSortOrder'
 
@@ -20,7 +20,7 @@ export function TimelineSection({
   timelines: TimelineSectionItem[]
   id: string | null
   type: string | null
-  path: StudioPathLike
+  path: PathSegment[]
 }) {
   const dataAttribute =
     id && type
