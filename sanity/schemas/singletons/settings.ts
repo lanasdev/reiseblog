@@ -26,8 +26,8 @@ export default defineType({
     }),
     defineField({
       name: 'footer',
-      description: 'Block of text displayed at the bottom of the page.',
-      title: 'Footer Info',
+      description: 'Text displayed in the sidebar footer. Supports links.',
+      title: 'Footer Text',
       type: 'array',
       of: [
         defineArrayMember({
@@ -48,6 +48,48 @@ export default defineType({
       ],
     }),
     defineField({
+      name: 'socialLinks',
+      title: 'Social Links',
+      description: 'Links to social profiles (Instagram, Twitter, etc.).',
+      type: 'array',
+      of: [
+        defineArrayMember({
+          type: 'object',
+          name: 'socialLink',
+          fields: [
+            {
+              name: 'platform',
+              type: 'string',
+              title: 'Platform',
+              options: {
+                list: [
+                  { title: 'Instagram', value: 'instagram' },
+                  { title: 'Twitter / X', value: 'twitter' },
+                  { title: 'LinkedIn', value: 'linkedin' },
+                  { title: 'YouTube', value: 'youtube' },
+                  { title: 'Facebook', value: 'facebook' },
+                  { title: 'GitHub', value: 'github' },
+                ],
+              },
+              validation: (Rule) => Rule.required(),
+            },
+            {
+              name: 'url',
+              type: 'url',
+              title: 'URL',
+              validation: (Rule) => Rule.required(),
+            },
+          ],
+          preview: {
+            select: { platform: 'platform' },
+            prepare: ({ platform }) => ({
+              title: platform ? platform.charAt(0).toUpperCase() + platform.slice(1) : 'Social link',
+            }),
+          },
+        }),
+      ],
+    }),
+    defineField({
       name: 'ogImage',
       title: 'Open Graph Image',
       type: 'image',
@@ -59,7 +101,7 @@ export default defineType({
     prepare() {
       return {
         title: 'Settings',
-        subtitle: 'Menu Items, Footer Info, and Open Graph Image',
+        subtitle: 'Menu Items, Footer, Social Links, and Open Graph Image',
       }
     },
   },

@@ -1,6 +1,23 @@
 import type { Image } from 'sanity'
 import type { PortableTextBlock } from 'next-sanity'
 
+export interface SocialLink {
+  _key: string
+  platform:
+    | 'instagram'
+    | 'twitter'
+    | 'linkedin'
+    | 'youtube'
+    | 'facebook'
+    | 'github'
+  url: string
+}
+
+export interface Settings {
+  footer?: PortableTextBlock[]
+  socialLinks?: SocialLink[]
+}
+
 export interface MilestoneItem {
   _key: string
   description?: string

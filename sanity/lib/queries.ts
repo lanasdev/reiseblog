@@ -29,6 +29,11 @@ export const settingsQuery = defineQuery(`
     _id,
     _type,
     footer,
+    socialLinks[]{
+      _key,
+      platform,
+      url
+    },
     menuItems[]{
       _key,
       ...@->{

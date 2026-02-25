@@ -2,7 +2,8 @@
 
 import { useCallback, useState } from "react"
 import dynamic from "next/dynamic"
-import type { BlogPost } from "@/lib/types"
+import type { BlogPost, SocialLink } from "@/lib/types"
+import type { PortableTextBlock } from "next-sanity"
 import PostSidebar from "./post-sidebar"
 
 const TravelMap = dynamic(() => import("./travel-map"), {
@@ -19,9 +20,15 @@ const TravelMap = dynamic(() => import("./travel-map"), {
 
 interface ReiseblogHomeProps {
   posts: BlogPost[]
+  footer?: PortableTextBlock[]
+  socialLinks?: SocialLink[]
 }
 
-export default function ReiseblogHome({ posts }: ReiseblogHomeProps) {
+export default function ReiseblogHome({
+  posts,
+  footer,
+  socialLinks,
+}: ReiseblogHomeProps) {
   const [activePostId, setActivePostId] = useState<string | null>(null)
 
   const handlePinClick = useCallback((postId: string) => {
@@ -54,6 +61,8 @@ export default function ReiseblogHome({ posts }: ReiseblogHomeProps) {
           activePostId={activePostId}
           onPostHover={handlePostHover}
           onPostClick={handlePostClick}
+          footer={footer}
+          socialLinks={socialLinks}
         />
       </div>
     </div>

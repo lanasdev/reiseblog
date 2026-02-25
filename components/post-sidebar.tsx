@@ -1,16 +1,42 @@
 "use client"
 
 import { useState } from "react"
-import type { BlogPost } from "@/lib/types"
+import { PortableText } from "next-sanity"
+import type { PortableTextBlock } from "next-sanity"
+import type { BlogPost, SocialLink } from "@/lib/types"
 import PostCard from "./post-card"
-import { Compass, Search, X } from "lucide-react"
+import {
+  Compass,
+  Search,
+  X,
+  Instagram,
+  Twitter,
+  Linkedin,
+  Youtube,
+  Facebook,
+  Github,
+} from "lucide-react"
 import { motion, AnimatePresence } from "motion/react"
+
+const SOCIAL_ICONS: Record<
+  SocialLink["platform"],
+  React.ComponentType<{ className?: string }>
+> = {
+  instagram: Instagram,
+  twitter: Twitter,
+  linkedin: Linkedin,
+  youtube: Youtube,
+  facebook: Facebook,
+  github: Github,
+}
 
 interface PostSidebarProps {
   posts: BlogPost[]
   activePostId: string | null
   onPostHover: (postId: string | null) => void
   onPostClick: (postId: string) => void
+  footer?: PortableTextBlock[]
+  socialLinks?: SocialLink[]
 }
 
 export default function PostSidebar({
@@ -18,6 +44,8 @@ export default function PostSidebar({
   activePostId,
   onPostHover,
   onPostClick,
+  footer,
+  socialLinks,
 }: PostSidebarProps) {
   const [searchQuery, setSearchQuery] = useState("")
   const [activeTag, setActiveTag] = useState("All")
@@ -154,10 +182,53 @@ export default function PostSidebar({
       </div>
 
       {/* Footer */}
-      <footer className="flex-shrink-0 border-t border-border px-4 py-2 md:px-5">
-        <p className="text-[10px] text-muted-foreground">
-          Geschichten von unterwegs
-        </p>
+      <footer className="flex flex-shrink-0 flex-col gap-2 border-t border-border px-4 py-2 md:px-5">
+        {footer && footer.length > 0 ? (
+          <div className="text-[10px] text-muted-foreground [&_a]:underline [&_a]:transition-colors hover:[&_a]:text-foreground">
+            <PortableText
+              value={footer}
+              components={{
+                block: {
+                  normal: ({ children }) => <p>{children}</p>,
+                },
+                marks: {
+                  link: ({ children, value }) => (
+                    <a
+                      href={value?.href}
+                      rel="noreferrer noopener"
+                      target="_blank"
+                    >
+                      {children}
+                    </a>
+                  ),
+                },
+              }}
+            />
+          </div>
+        ) : (
+          <p className="text-[10px] text-muted-foreground">
+            Geschichten von unterwegs
+          </p>
+        )}
+        {socialLinks && socialLinks.length > 0 && (
+          <div className="flex gap-2">
+            {socialLinks.map((link) => {
+              const Icon = SOCIAL_ICONS[link.platform]
+              return (
+                <a
+                  key={link._key}
+                  href={link.url}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="text-muted-foreground transition-colors hover:text-foreground"
+                  aria-label={link.platform}
+                >
+                  <Icon className="h-3.5 w-3.5" />
+                </a>
+              )
+            })}
+          </div>
+        )}
       </footer>
     </aside>
   )
