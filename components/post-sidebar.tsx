@@ -4,9 +4,12 @@ import { useState } from "react"
 import { PortableText } from "next-sanity"
 import type { PortableTextBlock } from "next-sanity"
 import type { BlogPost, SocialLink } from "@/lib/types"
+import SubscriberLogoutButton from "@/components/subscriber/SubscriberLogoutButton"
 import PostCard from "./post-card"
+import Link from "next/link"
 import {
   Compass,
+  Lock,
   Search,
   X,
   Instagram,
@@ -32,6 +35,7 @@ const SOCIAL_ICONS: Record<
 
 interface PostSidebarProps {
   posts: BlogPost[]
+  isSubscriber: boolean
   activePostId: string | null
   onPostHover: (postId: string | null) => void
   onPostClick: (postId: string) => void
@@ -41,6 +45,7 @@ interface PostSidebarProps {
 
 export default function PostSidebar({
   posts,
+  isSubscriber,
   activePostId,
   onPostHover,
   onPostClick,
@@ -81,6 +86,26 @@ export default function PostSidebar({
               Geschichten von unterwegs
             </p>
           </div>
+        </div>
+        <div className="mt-3 flex items-center justify-between rounded-md border border-border bg-secondary/40 px-2.5 py-2">
+          <p className="inline-flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+            <Lock className="h-3.5 w-3.5" />
+            {isSubscriber ? "Subscriber active" : "Free tier"}
+          </p>
+          {isSubscriber ? (
+            <SubscriberLogoutButton
+              className="bg-background px-2 py-1 text-[11px]"
+              label="Logout"
+              redirectTo="/"
+            />
+          ) : (
+            <Link
+              href="/subscribe"
+              className="rounded-md border border-border bg-background px-2 py-1 text-[11px] font-medium text-foreground transition-colors hover:bg-secondary"
+            >
+              Upgrade
+            </Link>
+          )}
         </div>
       </header>
 

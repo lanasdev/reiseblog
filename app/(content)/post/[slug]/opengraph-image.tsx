@@ -1,4 +1,6 @@
 import { ImageResponse } from 'next/og'
+import { isSubscriberOnlyPost } from '@/lib/post-access'
+import { hasSubscriberSession } from '@/lib/subscriber-session'
 import { sanityFetch } from '@/sanity/lib/live'
 import {
   PLACEHOLDER_IMAGE,
@@ -10,6 +12,7 @@ import { notFound } from 'next/navigation'
 export const alt = 'Blog post'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
+export const dynamic = 'force-dynamic'
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -22,10 +25,14 @@ export default async function Image({ params }: Props) {
   })
 
   if (!post) notFound()
+  const isSubscriber = await hasSubscriberSession()
+  const hideSubscriberContent = isSubscriberOnlyPost(post) && !isSubscriber
 
   const imageUrl =
     urlForOpenGraphImage(post.coverImageOg) ?? PLACEHOLDER_IMAGE
-  const title = post.title ?? 'Untitled post'
+  const title = hideSubscriberContent
+    ? `${post.title ?? 'Travel story'} (Subscribers only)`
+    : post.title ?? 'Untitled post'
 
   return new ImageResponse(
     (
@@ -57,7 +64,7 @@ export default async function Image({ params }: Props) {
           >
             {title}
           </div>
-          {post.excerpt && (
+          {!hideSubscriberContent && post.excerpt && (
             <div
               style={{
                 fontSize: 20,

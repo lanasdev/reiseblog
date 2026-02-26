@@ -13,3 +13,17 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000) for the site and [http://localhost:3000/studio](http://localhost:3000/studio) for Sanity Studio.
 
+## Paid tier access
+
+Posts now support an `accessTier` field (`free` or `subscriber`) in Sanity Studio.
+
+- Free users can view all `free` posts.
+- `subscriber` posts render a paywall until the user unlocks subscriber access.
+
+Subscriber access uses a signed HttpOnly cookie:
+
+- `SUBSCRIBER_SESSION_SECRET` (required in production, min 32 chars)
+- `SUBSCRIBER_ACCESS_CODE` (code entered on `/subscribe`)
+
+If `SUBSCRIBER_ACCESS_CODE` is not set in local development, the fallback code is `reiseblog-plus-demo`.
+

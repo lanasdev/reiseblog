@@ -1,6 +1,8 @@
 import type { Image } from 'sanity'
 import type { PortableTextBlock } from 'next-sanity'
 
+export type AccessTier = 'free' | 'subscriber'
+
 export interface SocialLink {
   _key: string
   platform:
@@ -38,6 +40,7 @@ export interface BlogPost {
   title: string
   slug: string
   excerpt: string
+  accessTier: AccessTier
   coverImage: string
   coverImageData?: CoverImageData
   date: string

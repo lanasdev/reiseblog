@@ -1,4 +1,4 @@
-import { MapPin } from "lucide-react";
+import { Lock, MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -7,6 +7,7 @@ interface RelatedPostCardProps {
 		_id: string;
 		title: string;
 		slug: string;
+		accessTier: "free" | "subscriber";
 		coverImage: string;
 		coverImageData?: {
 			asset?: {
@@ -39,6 +40,12 @@ export default function RelatedPostCard({ post }: RelatedPostCardProps) {
 			</div>
 			<div className="p-3 md:p-4">
 				<div className="flex flex-wrap gap-1">
+					{post.accessTier === "subscriber" && (
+						<span className="inline-flex items-center gap-1 text-[10px] font-medium text-amber-700 uppercase tracking-wider">
+							<Lock className="h-3 w-3" />
+							Subscriber
+						</span>
+					)}
 					{post.tags?.map((tag) => (
 						<span
 							key={tag._id}

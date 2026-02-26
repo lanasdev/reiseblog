@@ -52,6 +52,7 @@ export const postsQuery = defineQuery(`
     title,
     "slug": slug.current,
     excerpt,
+    "accessTier": coalesce(accessTier, "free"),
     "coverImage": coalesce(coverImage.asset->url, $placeholderImage),
     "coverImageData": coverImage{
       asset->{
@@ -82,6 +83,7 @@ export const postBySlugQuery = defineQuery(`
     title,
     "slug": slug.current,
     excerpt,
+    "accessTier": coalesce(accessTier, "free"),
     "coverImageOg": coverImage,
     "coverImage": coalesce(coverImage.asset->url, $placeholderImage),
     "coverImageData": coverImage{
@@ -113,6 +115,7 @@ export const relatedPostsQuery = defineQuery(`
     _id,
     title,
     "slug": slug.current,
+    "accessTier": coalesce(accessTier, "free"),
     "coverImage": coalesce(coverImage.asset->url, $placeholderImage),
     "coverImageData": coverImage{
       asset->{

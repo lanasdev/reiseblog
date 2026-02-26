@@ -20,12 +20,14 @@ const TravelMap = dynamic(() => import("./travel-map"), {
 
 interface ReiseblogHomeProps {
   posts: BlogPost[]
+  isSubscriber: boolean
   footer?: PortableTextBlock[]
   socialLinks?: SocialLink[]
 }
 
 export default function ReiseblogHome({
   posts,
+  isSubscriber,
   footer,
   socialLinks,
 }: ReiseblogHomeProps) {
@@ -58,6 +60,7 @@ export default function ReiseblogHome({
       <div className="order-2 flex flex-1 flex-col border-r border-border md:order-1 md:h-full md:w-[38.2%] md:shrink-0 md:overflow-hidden">
         <PostSidebar
           posts={posts}
+          isSubscriber={isSubscriber}
           activePostId={activePostId}
           onPostHover={handlePostHover}
           onPostClick={handlePostClick}
