@@ -14,7 +14,7 @@
     "@base-ui/react": "^1.2.0",
     "@hookform/resolvers": "^5.2.2",
     "@next/env": "^16.1.6",
-    "@prisma/adapter-better-sqlite3": "^7.4.1",
+    "@prisma/adapter-pg": "^7.4.1",
     "@prisma/client": "^7.4.1",
     "@radix-ui/react-accordion": "1.2.12",
     "@radix-ui/react-alert-dialog": "1.1.15",
@@ -64,6 +64,7 @@
     "next": "16.2.0-canary.60",
     "next-sanity": "^12.1.0",
     "next-themes": "^0.4.6",
+    "pg": "^8.19.0",
     "radix-ui": "^1.4.3",
     "react": "19.2.4",
     "react-day-picker": "9.13.2",
@@ -87,7 +88,6 @@
       "prisma",
       "@prisma/client",
       "@prisma/engines",
-      "better-sqlite3",
       "sharp"
     ]
   },

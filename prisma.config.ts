@@ -1,6 +1,6 @@
 import { defineConfig } from 'prisma/config'
 
-const authDatabaseUrl = process.env.AUTH_DATABASE_URL ?? 'file:./prisma/dev.db'
+const databaseUrl = process.env.DATABASE_URL
 
 export default defineConfig({
   schema: 'prisma/schema.prisma',
@@ -8,6 +8,6 @@ export default defineConfig({
     path: 'prisma/migrations',
   },
   datasource: {
-    url: authDatabaseUrl,
+    url: databaseUrl,
   },
 })

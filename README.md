@@ -24,7 +24,7 @@ Authentication now uses Better Auth + Prisma:
 
 - `BETTER_AUTH_URL` (e.g. `http://localhost:3000`)
 - `BETTER_AUTH_SECRET` (required in production)
-- `AUTH_DATABASE_URL` (Prisma connection string for Better Auth user/session data)
+- `DATABASE_URL` (hosted Prisma Postgres connection string for Better Auth user/session data)
 - `SUBSCRIBER_ACCESS_CODE` (code entered on `/subscribe`)
 - `SUBSCRIBER_LOCKED_POST_SLUGS` (optional comma-separated fallback slugs that stay subscriber-only even before editors update CMS content)
 

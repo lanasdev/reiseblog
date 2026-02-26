@@ -20,7 +20,7 @@ function getAuthSecret(): string {
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
-    provider: 'sqlite',
+    provider: 'postgresql',
   }),
   secret: getAuthSecret(),
   baseURL: process.env.BETTER_AUTH_URL ?? 'http://localhost:3000',
