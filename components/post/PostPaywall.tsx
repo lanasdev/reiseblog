@@ -31,6 +31,11 @@ export default function PostPaywall({ post }: { post: BlogPost }) {
           <Link href="/subscribe" className="font-medium text-primary underline">
             View subscriber options
           </Link>
+          {' '}or{' '}
+          <Link href="/auth" className="font-medium text-primary underline">
+            sign in
+          </Link>
+          .
         </p>
       </div>
     </section>

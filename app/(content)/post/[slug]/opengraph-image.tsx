@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og'
 import { applyResolvedAccessTier, isSubscriberOnlyPost } from '@/lib/post-access'
-import { hasSubscriberSession } from '@/lib/subscriber-session'
+import { getViewerAccess } from '@/lib/auth-session'
 import { sanityFetch } from '@/sanity/lib/live'
 import {
   PLACEHOLDER_IMAGE,
@@ -26,9 +26,9 @@ export default async function Image({ params }: Props) {
 
   const resolvedPost = post ? applyResolvedAccessTier(post) : null
   if (!resolvedPost) notFound()
-  const isSubscriber = await hasSubscriberSession()
+  const viewer = await getViewerAccess()
   const hideSubscriberContent =
-    isSubscriberOnlyPost(resolvedPost) && !isSubscriber
+    isSubscriberOnlyPost(resolvedPost) && !viewer.isSubscriber
 
   const imageUrl =
     urlForOpenGraphImage(resolvedPost.coverImageOg) ?? PLACEHOLDER_IMAGE

@@ -12,8 +12,8 @@ import {
 	canViewPost,
 	isSubscriberOnlyPost,
 } from "@/lib/post-access";
+import { getViewerAccess } from "@/lib/auth-session";
 import { getPostBySlug } from "@/lib/sanity";
-import { hasSubscriberSession } from "@/lib/subscriber-session";
 import type { BlogPost } from "@/lib/types";
 import { sanityFetch } from "@/sanity/lib/live";
 import {
@@ -37,8 +37,8 @@ export async function generateMetadata({ params }: Props) {
 		});
 		const resolvedPost = post ? applyResolvedAccessTier(post) : null;
 		if (!resolvedPost) return { title: "Not Found" };
-		const isSubscriber = await hasSubscriberSession();
-		if (isSubscriberOnlyPost(resolvedPost) && !isSubscriber) {
+		const viewer = await getViewerAccess();
+		if (isSubscriberOnlyPost(resolvedPost) && !viewer.isSubscriber) {
 			return {
 				title: `${resolvedPost.title} - Subscriber only`,
 				description: "This travel story is available to subscribers.",
@@ -52,8 +52,8 @@ export async function generateMetadata({ params }: Props) {
 		const post = await getPostBySlug(slug);
 		const resolvedPost = post ? applyResolvedAccessTier(post) : null;
 		if (!resolvedPost) return { title: "Not Found" };
-		const isSubscriber = await hasSubscriberSession();
-		if (isSubscriberOnlyPost(resolvedPost) && !isSubscriber) {
+		const viewer = await getViewerAccess();
+		if (isSubscriberOnlyPost(resolvedPost) && !viewer.isSubscriber) {
 			return {
 				title: `${resolvedPost.title} - Subscriber only`,
 				description: "This travel story is available to subscribers.",
@@ -82,9 +82,9 @@ export default async function PostPage({ params }: Props) {
 	}
 
 	if (!post) notFound();
-	const isSubscriber = await hasSubscriberSession();
+	const viewer = await getViewerAccess();
 
-	if (!canViewPost(post, isSubscriber)) {
+	if (!canViewPost(post, viewer.isSubscriber)) {
 		return (
 			<PostPageShell>
 				<PostHero post={post} />

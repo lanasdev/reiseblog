@@ -1,6 +1,7 @@
 'use client'
 
 import { cn } from '@/lib/utils'
+import { signOut } from '@/lib/auth-client'
 import { LoaderCircle, LogOut } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -23,9 +24,7 @@ export default function SubscriberLogoutButton({
     setIsSubmitting(true)
 
     try {
-      await fetch('/api/subscriber/logout', {
-        method: 'POST',
-      })
+      await signOut()
 
       if (redirectTo) {
         router.replace(redirectTo)

@@ -7,11 +7,13 @@ import { type FormEvent, useState } from 'react'
 interface SubscriberAccessFormProps {
   redirectTo?: string
   submitLabel?: string
+  unauthenticatedMessage?: string
 }
 
 export default function SubscriberAccessForm({
   redirectTo,
   submitLabel = 'Unlock subscriber access',
+  unauthenticatedMessage = 'Please sign in first to activate subscriber access.',
 }: SubscriberAccessFormProps) {
   const router = useRouter()
   const [accessCode, setAccessCode] = useState('')
@@ -24,7 +26,7 @@ export default function SubscriberAccessForm({
     setIsSubmitting(true)
 
     try {
-      const response = await fetch('/api/subscriber/login', {
+      const response = await fetch('/api/subscriber/activate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ accessCode }),
@@ -34,7 +36,11 @@ export default function SubscriberAccessForm({
         const payload = (await response.json().catch(() => null)) as
           | { error?: string }
           | null
-        setError(payload?.error ?? 'Unable to unlock subscriber access.')
+        if (response.status === 401) {
+          setError(payload?.error ?? unauthenticatedMessage)
+          return
+        }
+        setError(payload?.error ?? 'Unable to activate subscriber access.')
         setIsSubmitting(false)
         return
       }
@@ -45,7 +51,7 @@ export default function SubscriberAccessForm({
       }
       router.refresh()
     } catch {
-      setError('Network error while validating your subscriber code.')
+      setError('Network error while activating your subscriber access.')
     } finally {
       setIsSubmitting(false)
     }

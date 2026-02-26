@@ -1,10 +1,8 @@
 import SubscriberAccessForm from '@/components/subscriber/SubscriberAccessForm'
 import SubscriberLogoutButton from '@/components/subscriber/SubscriberLogoutButton'
-import {
-  getSubscriberAccessCodeHint,
-  hasSubscriberSession,
-} from '@/lib/subscriber-session'
-import { CheckCircle2, Lock, Sparkles } from 'lucide-react'
+import { getViewerAccess } from '@/lib/auth-session'
+import { getSubscriberAccessCodeHint } from '@/lib/subscriber-access'
+import { CheckCircle2, Lock, Sparkles, UserRound } from 'lucide-react'
 import Link from 'next/link'
 
 export const metadata = {
@@ -13,10 +11,8 @@ export const metadata = {
 }
 
 export default async function SubscribePage() {
-  const [isSubscriber, accessCodeHint] = await Promise.all([
-    hasSubscriberSession(),
-    Promise.resolve(getSubscriberAccessCodeHint()),
-  ])
+  const viewer = await getViewerAccess()
+  const accessCodeHint = getSubscriberAccessCodeHint()
 
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-5 py-10 md:px-8 md:py-14">
@@ -51,14 +47,27 @@ export default async function SubscribePage() {
 
         <div className="my-6 h-px w-full bg-border" />
 
-        {isSubscriber ? (
+        {!viewer.isAuthenticated ? (
+          <div className="space-y-4">
+            <p className="inline-flex items-center gap-2 rounded-md border border-border bg-secondary/50 px-3 py-2 text-sm text-foreground">
+              <UserRound className="h-4 w-4" />
+              Sign in to activate subscriber access for your account.
+            </p>
+            <Link
+              href="/auth"
+              className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
+            >
+              Go to sign in
+            </Link>
+          </div>
+        ) : viewer.isSubscriber ? (
           <div className="space-y-4">
             <p className="inline-flex items-center gap-2 rounded-md border border-primary/30 bg-primary/5 px-3 py-2 text-sm text-primary">
               <Lock className="h-4 w-4" />
-              Subscriber access is currently active.
+              Subscriber access is active on this account.
             </p>
             <div className="flex flex-wrap items-center gap-3">
-              <SubscriberLogoutButton label="Deactivate access" />
+              <SubscriberLogoutButton label="Sign out" />
               <Link
                 href="/"
                 className="text-sm font-medium text-primary underline"
