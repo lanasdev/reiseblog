@@ -1,5 +1,5 @@
 import { ImageResponse } from 'next/og'
-import { isSubscriberOnlyPost } from '@/lib/post-access'
+import { applyResolvedAccessTier, isSubscriberOnlyPost } from '@/lib/post-access'
 import { hasSubscriberSession } from '@/lib/subscriber-session'
 import { sanityFetch } from '@/sanity/lib/live'
 import {
@@ -24,15 +24,17 @@ export default async function Image({ params }: Props) {
     stega: false,
   })
 
-  if (!post) notFound()
+  const resolvedPost = post ? applyResolvedAccessTier(post) : null
+  if (!resolvedPost) notFound()
   const isSubscriber = await hasSubscriberSession()
-  const hideSubscriberContent = isSubscriberOnlyPost(post) && !isSubscriber
+  const hideSubscriberContent =
+    isSubscriberOnlyPost(resolvedPost) && !isSubscriber
 
   const imageUrl =
-    urlForOpenGraphImage(post.coverImageOg) ?? PLACEHOLDER_IMAGE
+    urlForOpenGraphImage(resolvedPost.coverImageOg) ?? PLACEHOLDER_IMAGE
   const title = hideSubscriberContent
-    ? `${post.title ?? 'Travel story'} (Subscribers only)`
-    : post.title ?? 'Untitled post'
+    ? `${resolvedPost.title ?? 'Travel story'} (Subscribers only)`
+    : resolvedPost.title ?? 'Untitled post'
 
   return new ImageResponse(
     (
@@ -64,7 +66,7 @@ export default async function Image({ params }: Props) {
           >
             {title}
           </div>
-          {!hideSubscriberContent && post.excerpt && (
+          {!hideSubscriberContent && resolvedPost.excerpt && (
             <div
               style={{
                 fontSize: 20,
@@ -76,7 +78,7 @@ export default async function Image({ params }: Props) {
                 WebkitBoxOrient: 'vertical',
               }}
             >
-              {post.excerpt}
+              {resolvedPost.excerpt}
             </div>
           )}
         </div>

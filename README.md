@@ -24,6 +24,7 @@ Subscriber access uses a signed HttpOnly cookie:
 
 - `SUBSCRIBER_SESSION_SECRET` (required in production, min 32 chars)
 - `SUBSCRIBER_ACCESS_CODE` (code entered on `/subscribe`)
+- `SUBSCRIBER_LOCKED_POST_SLUGS` (optional comma-separated fallback slugs that stay subscriber-only even before editors update CMS content)
 
 If `SUBSCRIBER_ACCESS_CODE` is not set in local development, the fallback code is `reiseblog-plus-demo`.
 

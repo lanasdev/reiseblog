@@ -1,5 +1,6 @@
 import ReiseblogHome from '@/components/reiseblog-home'
 import ReiseblogHomeSkeleton from '@/components/reiseblog-home-skeleton'
+import { applyResolvedAccessTier } from '@/lib/post-access'
 import { hasSubscriberSession } from '@/lib/subscriber-session'
 import { sanityFetch } from '@/sanity/lib/live'
 import { PLACEHOLDER_IMAGE, postsQuery, settingsQuery } from '@/sanity/lib/queries'
@@ -18,7 +19,9 @@ async function HomePageContent() {
       sanityFetch({ query: settingsQuery }),
       subscriberSessionPromise,
     ])
-    const resolvedPosts = posts?.length ? posts : await getPosts()
+    const resolvedPosts = (posts?.length ? posts : await getPosts()).map(
+      applyResolvedAccessTier
+    )
     return (
       <ReiseblogHome
         posts={resolvedPosts}
@@ -32,7 +35,12 @@ async function HomePageContent() {
       getPosts(),
       subscriberSessionPromise,
     ])
-    return <ReiseblogHome posts={posts} isSubscriber={isSubscriber} />
+    return (
+      <ReiseblogHome
+        posts={posts.map(applyResolvedAccessTier)}
+        isSubscriber={isSubscriber}
+      />
+    )
   }
 }
 

@@ -1,6 +1,6 @@
 import type { BlogPost } from "./types"
 import { demoPosts } from "./demo-posts"
-import { normalizeAccessTier } from "./post-access"
+import { applyResolvedAccessTier } from "./post-access"
 import { client } from "@/sanity/lib/client"
 import {
   PLACEHOLDER_IMAGE,
@@ -11,10 +11,7 @@ import {
 const sharedParams = { placeholderImage: PLACEHOLDER_IMAGE }
 
 function normalizePost(post: BlogPost): BlogPost {
-  return {
-    ...post,
-    accessTier: normalizeAccessTier(post.accessTier),
-  }
+  return applyResolvedAccessTier(post)
 }
 
 export async function getPosts(): Promise<BlogPost[]> {

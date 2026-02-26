@@ -7,7 +7,11 @@ import PostPaywall from "@/components/post/PostPaywall";
 import PostPageShell from "@/components/post/PostPageShell";
 import RelatedPosts from "@/components/post/RelatedPosts";
 import RelatedPostsSkeleton from "@/components/post/RelatedPostsSkeleton";
-import { canViewPost, isSubscriberOnlyPost } from "@/lib/post-access";
+import {
+	applyResolvedAccessTier,
+	canViewPost,
+	isSubscriberOnlyPost,
+} from "@/lib/post-access";
 import { getPostBySlug } from "@/lib/sanity";
 import { hasSubscriberSession } from "@/lib/subscriber-session";
 import type { BlogPost } from "@/lib/types";
@@ -31,31 +35,33 @@ export async function generateMetadata({ params }: Props) {
 			params: { slug, placeholderImage: PLACEHOLDER_IMAGE },
 			stega: false,
 		});
-		if (!post) return { title: "Not Found" };
+		const resolvedPost = post ? applyResolvedAccessTier(post) : null;
+		if (!resolvedPost) return { title: "Not Found" };
 		const isSubscriber = await hasSubscriberSession();
-		if (isSubscriberOnlyPost(post) && !isSubscriber) {
+		if (isSubscriberOnlyPost(resolvedPost) && !isSubscriber) {
 			return {
-				title: `${post.title} - Subscriber only`,
+				title: `${resolvedPost.title} - Subscriber only`,
 				description: "This travel story is available to subscribers.",
 			};
 		}
 		return {
-			title: `${post.title} - Reiseblog`,
-			description: post.excerpt,
+			title: `${resolvedPost.title} - Reiseblog`,
+			description: resolvedPost.excerpt,
 		};
 	} catch {
 		const post = await getPostBySlug(slug);
-		if (!post) return { title: "Not Found" };
+		const resolvedPost = post ? applyResolvedAccessTier(post) : null;
+		if (!resolvedPost) return { title: "Not Found" };
 		const isSubscriber = await hasSubscriberSession();
-		if (isSubscriberOnlyPost(post) && !isSubscriber) {
+		if (isSubscriberOnlyPost(resolvedPost) && !isSubscriber) {
 			return {
-				title: `${post.title} - Subscriber only`,
+				title: `${resolvedPost.title} - Subscriber only`,
 				description: "This travel story is available to subscribers.",
 			};
 		}
 		return {
-			title: `${post.title} - Reiseblog`,
-			description: post.excerpt,
+			title: `${resolvedPost.title} - Reiseblog`,
+			description: resolvedPost.excerpt,
 		};
 	}
 }
@@ -69,9 +75,10 @@ export default async function PostPage({ params }: Props) {
 			query: postBySlugQuery,
 			params: { slug, placeholderImage: PLACEHOLDER_IMAGE },
 		});
-		post = data;
+		post = data ? applyResolvedAccessTier(data) : null;
 	} catch {
-		post = await getPostBySlug(slug);
+		const fallbackPost = await getPostBySlug(slug);
+		post = fallbackPost ? applyResolvedAccessTier(fallbackPost) : null;
 	}
 
 	if (!post) notFound();
