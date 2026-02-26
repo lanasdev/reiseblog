@@ -1,6 +1,6 @@
 import 'server-only'
 
-import { PrismaBetterSQLite3 } from '@prisma/adapter-better-sqlite3'
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
 import { PrismaClient } from '@prisma/client'
 
 const globalForPrisma = globalThis as unknown as {
@@ -8,7 +8,7 @@ const globalForPrisma = globalThis as unknown as {
 }
 
 function createPrismaClient() {
-  const adapter = new PrismaBetterSQLite3({
+  const adapter = new PrismaBetterSqlite3({
     url: process.env.AUTH_DATABASE_URL ?? 'file:./prisma/dev.db',
   })
 
