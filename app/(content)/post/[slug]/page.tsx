@@ -43,16 +43,6 @@ export async function generateMetadata({ params }: Props) {
 		});
 		const resolvedPost = post ? applyResolvedAccessTier(post) : null;
 		if (!resolvedPost) return { title: "Not Found" };
-		// #region agent log
-		appendFileSync("/opt/cursor/logs/debug.log", JSON.stringify({ hypothesisId: "D", location: "app/(content)/post/[slug]/page.tsx:generateMetadata", message: "generateMetadata requesting viewer access", data: { slug, source: "sanityFetch" }, timestamp: Date.now() }) + "\n");
-		// #endregion
-		const viewer = await getViewerAccess();
-		if (isSubscriberOnlyPost(resolvedPost) && !viewer.isSubscriber) {
-			return {
-				title: `${resolvedPost.title} - Subscriber only`,
-				description: "This travel story is available to subscribers.",
-			};
-		}
 		return {
 			title: `${resolvedPost.title} - Reiseblog`,
 			description: resolvedPost.excerpt,
@@ -64,13 +54,6 @@ export async function generateMetadata({ params }: Props) {
 		const post = await getPostBySlug(slug);
 		const resolvedPost = post ? applyResolvedAccessTier(post) : null;
 		if (!resolvedPost) return { title: "Not Found" };
-		const viewer = await getViewerAccess();
-		if (isSubscriberOnlyPost(resolvedPost) && !viewer.isSubscriber) {
-			return {
-				title: `${resolvedPost.title} - Subscriber only`,
-				description: "This travel story is available to subscribers.",
-			};
-		}
 		return {
 			title: `${resolvedPost.title} - Reiseblog`,
 			description: resolvedPost.excerpt,
