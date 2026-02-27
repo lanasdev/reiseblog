@@ -1,15 +1,21 @@
 "use client"
 
+import { useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { AlertCircle } from "lucide-react"
 
 export default function ErrorBoundary({
+  error,
   reset,
 }: {
   error: Error & { digest?: string }
   reset: () => void
 }) {
+  useEffect(() => {
+    console.error(error)
+  }, [error])
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-background px-6">
       <div className="flex max-w-md flex-col items-center text-center">

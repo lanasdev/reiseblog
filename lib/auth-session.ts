@@ -1,6 +1,5 @@
 import 'server-only'
 
-import { appendFileSync } from 'node:fs'
 import { headers } from 'next/headers'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
@@ -14,17 +13,9 @@ export interface ViewerAccess {
 }
 
 export async function getViewerAccess(): Promise<ViewerAccess> {
-  // #region agent log
-  appendFileSync('/opt/cursor/logs/debug.log', JSON.stringify({ hypothesisId: 'A', location: 'lib/auth-session.ts:getViewerAccess', message: 'getViewerAccess entry', data: {}, timestamp: Date.now() }) + '\n')
-  // #endregion
-
   const session = await auth.api.getSession({
     headers: await headers(),
   })
-
-  // #region agent log
-  appendFileSync('/opt/cursor/logs/debug.log', JSON.stringify({ hypothesisId: 'A', location: 'lib/auth-session.ts:getViewerAccess', message: 'Session fetched', data: { hasSession: Boolean(session), hasUserId: Boolean(session?.user?.id) }, timestamp: Date.now() }) + '\n')
-  // #endregion
 
   if (!session?.user?.id) {
     return {

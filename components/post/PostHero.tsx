@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { BlogPost } from "@/lib/types";
 
-const MotionImage = motion.create(Image);
+const MotionImage = motion(Image);
 
 export default function PostHero({ post }: { post: BlogPost }) {
 	const formattedDate = new Date(post.date).toLocaleDateString("de-DE", {
