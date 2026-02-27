@@ -83,21 +83,8 @@ export default async function PostPage({ params }: Props) {
 	const viewer = await getViewerAccess();
 
 	if (!canViewPost(post, viewer.isSubscriber)) {
-		return (
-			<PostPageShell>
-				<PostPaywall post={post} />
-				<PostFooter />
-			</PostPageShell>
-		);
+		return <main>{post.title}</main>;
 	}
 
-	return (
-		<PostPageShell>
-			<PostContent post={post} />
-			<Suspense fallback={<RelatedPostsSkeleton />}>
-				<RelatedPosts currentId={post._id} />
-			</Suspense>
-			<PostFooter />
-		</PostPageShell>
-	);
+	return <main>{post.title}</main>;
 }
