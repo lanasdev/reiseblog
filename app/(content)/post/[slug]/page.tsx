@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import { appendFileSync } from "node:fs";
 import PostContent from "@/components/post/PostContent";
 import PostFooter from "@/components/post/PostFooter";
 import PostHero from "@/components/post/PostHero";
@@ -37,6 +38,9 @@ export async function generateMetadata({ params }: Props) {
 		});
 		const resolvedPost = post ? applyResolvedAccessTier(post) : null;
 		if (!resolvedPost) return { title: "Not Found" };
+		// #region agent log
+		appendFileSync("/opt/cursor/logs/debug.log", JSON.stringify({ hypothesisId: "D", location: "app/(content)/post/[slug]/page.tsx:generateMetadata", message: "generateMetadata requesting viewer access", data: { slug, source: "sanityFetch" }, timestamp: Date.now() }) + "\n");
+		// #endregion
 		const viewer = await getViewerAccess();
 		if (isSubscriberOnlyPost(resolvedPost) && !viewer.isSubscriber) {
 			return {
@@ -82,6 +86,10 @@ export default async function PostPage({ params }: Props) {
 	}
 
 	if (!post) notFound();
+
+	// #region agent log
+	appendFileSync("/opt/cursor/logs/debug.log", JSON.stringify({ hypothesisId: "D", location: "app/(content)/post/[slug]/page.tsx:PostPage", message: "PostPage requesting viewer access", data: { slug, isSubscriberTier: isSubscriberOnlyPost(post) }, timestamp: Date.now() }) + "\n");
+	// #endregion
 	const viewer = await getViewerAccess();
 
 	if (!canViewPost(post, viewer.isSubscriber)) {
