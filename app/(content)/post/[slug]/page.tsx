@@ -86,7 +86,6 @@ export default async function PostPage({ params }: Props) {
 	if (!canViewPost(post, viewer.isSubscriber)) {
 		return (
 			<PostPageShell>
-				<PostHero post={post} />
 				<PostPaywall post={post} />
 				<PostFooter />
 			</PostPageShell>
@@ -95,7 +94,6 @@ export default async function PostPage({ params }: Props) {
 
 	return (
 		<PostPageShell>
-			<PostHero post={post} />
 			<PostContent post={post} />
 			<Suspense fallback={<RelatedPostsSkeleton />}>
 				<RelatedPosts currentId={post._id} />
