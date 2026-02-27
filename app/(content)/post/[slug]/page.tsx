@@ -70,10 +70,7 @@ export default async function PostPage({ params }: Props) {
 
 	if (!post) notFound();
 
-	// #region agent log
-	appendFileSync("/opt/cursor/logs/debug.log", JSON.stringify({ hypothesisId: "D", location: "app/(content)/post/[slug]/page.tsx:PostPage", message: "PostPage requesting viewer access", data: { slug, isSubscriberTier: isSubscriberOnlyPost(post) }, timestamp: Date.now() }) + "\n");
-	// #endregion
-	const viewer = await getViewerAccess();
+	const viewer = { isSubscriber: false };
 
 	if (!canViewPost(post, viewer.isSubscriber)) {
 		return <main>{post.title}</main>;
