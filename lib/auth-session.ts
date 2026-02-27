@@ -41,10 +41,6 @@ export async function getViewerAccess(): Promise<ViewerAccess> {
     select: { isSubscriber: true },
   })
 
-  // #region agent log
-  appendFileSync('/opt/cursor/logs/debug.log', JSON.stringify({ hypothesisId: 'A', location: 'lib/auth-session.ts:getViewerAccess', message: 'Database user fetched', data: { userId: session.user.id, hasDatabaseUser: Boolean(databaseUser), isSubscriber: databaseUser?.isSubscriber ?? false }, timestamp: Date.now() }) + '\n')
-  // #endregion
-
   return {
     userId: session.user.id,
     name: session.user.name ?? null,

@@ -30,6 +30,11 @@ export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: Props) {
 	const { slug } = await params;
+
+	// #region agent log
+	appendFileSync("/opt/cursor/logs/debug.log", JSON.stringify({ hypothesisId: "D", location: "app/(content)/post/[slug]/page.tsx:generateMetadata", message: "generateMetadata entry", data: { slug }, timestamp: Date.now() }) + "\n");
+	// #endregion
+
 	try {
 		const { data: post } = await sanityFetch({
 			query: postBySlugQuery,
@@ -52,7 +57,10 @@ export async function generateMetadata({ params }: Props) {
 			title: `${resolvedPost.title} - Reiseblog`,
 			description: resolvedPost.excerpt,
 		};
-	} catch {
+	} catch (error) {
+		// #region agent log
+		appendFileSync("/opt/cursor/logs/debug.log", JSON.stringify({ hypothesisId: "D", location: "app/(content)/post/[slug]/page.tsx:generateMetadata", message: "generateMetadata fallback after error", data: { slug, error: error instanceof Error ? { name: error.name, message: error.message } : { type: typeof error } }, timestamp: Date.now() }) + "\n");
+		// #endregion
 		const post = await getPostBySlug(slug);
 		const resolvedPost = post ? applyResolvedAccessTier(post) : null;
 		if (!resolvedPost) return { title: "Not Found" };

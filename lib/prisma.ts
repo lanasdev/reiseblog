@@ -29,10 +29,6 @@ function createPrismaClient() {
       log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
     })
 
-    // #region agent log
-    appendFileSync('/opt/cursor/logs/debug.log', JSON.stringify({ hypothesisId: 'C', location: 'lib/prisma.ts:createPrismaClient', message: 'Prisma client init success', data: {}, timestamp: Date.now() }) + '\n')
-    // #endregion
-
     return client
   } catch (error) {
     // #region agent log
