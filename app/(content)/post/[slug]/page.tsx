@@ -3,7 +3,6 @@ import { Suspense } from "react";
 import { appendFileSync } from "node:fs";
 import PostContent from "@/components/post/PostContent";
 import PostFooter from "@/components/post/PostFooter";
-import PostHero from "@/components/post/PostHero";
 import PostPaywall from "@/components/post/PostPaywall";
 import PostPageShell from "@/components/post/PostPageShell";
 import RelatedPosts from "@/components/post/RelatedPosts";
