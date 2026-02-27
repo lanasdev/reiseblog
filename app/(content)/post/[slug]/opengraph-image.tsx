@@ -1,13 +1,12 @@
 import { ImageResponse } from 'next/og'
-import { applyResolvedAccessTier, isSubscriberOnlyPost } from '@/lib/post-access'
-import { getViewerAccess } from '@/lib/auth-session'
+import { applyResolvedAccessTier } from '@/lib/post-access'
+import { getPostBySlug } from '@/lib/sanity'
 import { sanityFetch } from '@/sanity/lib/live'
 import {
   PLACEHOLDER_IMAGE,
   postBySlugQuery,
 } from '@/sanity/lib/queries'
 import { urlForOpenGraphImage } from '@/sanity/lib/utils'
-import { notFound } from 'next/navigation'
 
 export const alt = 'Blog post'
 export const size = { width: 1200, height: 630 }
@@ -18,23 +17,30 @@ type Props = { params: Promise<{ slug: string }> }
 
 export default async function Image({ params }: Props) {
   const { slug } = await params
-  const { data: post } = await sanityFetch({
-    query: postBySlugQuery,
-    params: { slug, placeholderImage: PLACEHOLDER_IMAGE },
-    stega: false,
-  })
 
-  const resolvedPost = post ? applyResolvedAccessTier(post) : null
-  if (!resolvedPost) notFound()
-  const viewer = await getViewerAccess()
-  const hideSubscriberContent =
-    isSubscriberOnlyPost(resolvedPost) && !viewer.isSubscriber
+  let resolvedPost: ReturnType<typeof applyResolvedAccessTier> | null = null
+
+  try {
+    const { data: post } = await sanityFetch({
+      query: postBySlugQuery,
+      params: { slug, placeholderImage: PLACEHOLDER_IMAGE },
+      stega: false,
+    })
+    resolvedPost = post ? applyResolvedAccessTier(post) : null
+  } catch {
+    resolvedPost = null
+  }
+
+  if (!resolvedPost) {
+    const fallbackPost = await getPostBySlug(slug)
+    resolvedPost = fallbackPost ? applyResolvedAccessTier(fallbackPost) : null
+  }
+
+  const title = resolvedPost?.title ?? 'Travel story'
+  const excerpt = resolvedPost?.excerpt
 
   const imageUrl =
-    urlForOpenGraphImage(resolvedPost.coverImageOg) ?? PLACEHOLDER_IMAGE
-  const title = hideSubscriberContent
-    ? `${resolvedPost.title ?? 'Travel story'} (Subscribers only)`
-    : resolvedPost.title ?? 'Untitled post'
+    urlForOpenGraphImage(resolvedPost?.coverImageOg) ?? PLACEHOLDER_IMAGE
 
   return new ImageResponse(
     (
@@ -66,7 +72,7 @@ export default async function Image({ params }: Props) {
           >
             {title}
           </div>
-          {!hideSubscriberContent && resolvedPost.excerpt && (
+          {excerpt && (
             <div
               style={{
                 fontSize: 20,
@@ -78,7 +84,7 @@ export default async function Image({ params }: Props) {
                 WebkitBoxOrient: 'vertical',
               }}
             >
-              {resolvedPost.excerpt}
+              {excerpt}
             </div>
           )}
         </div>
