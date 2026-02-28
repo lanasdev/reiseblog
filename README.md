@@ -18,17 +18,14 @@ Open [http://localhost:3000](http://localhost:3000) for the site and [http://loc
 Posts now support an `accessTier` field (`free` or `subscriber`) in Sanity Studio.
 
 - Free users can view all `free` posts.
-- `subscriber` posts render a paywall until an authenticated user unlocks subscriber access.
+- `subscriber` posts render a paywall until an authenticated user starts the paid membership.
 
 Authentication now uses Better Auth + Prisma:
 
 - `BETTER_AUTH_URL` (e.g. `http://localhost:3000`)
 - `BETTER_AUTH_SECRET` (required in production)
 - `DATABASE_URL` (hosted Prisma Postgres connection string for Better Auth user/session data)
-- `SUBSCRIBER_ACCESS_CODE` (code entered on `/subscribe`)
 - `SUBSCRIBER_LOCKED_POST_SLUGS` (optional comma-separated fallback slugs that stay subscriber-only even before editors update CMS content)
-
-If `SUBSCRIBER_ACCESS_CODE` is not set in local development, the fallback code is `reiseblog-plus-demo`.
 
 Users can sign in via `/auth` and manage auth/subscription actions from the round profile dropdown in the sidebar header.
 

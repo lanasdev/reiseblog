@@ -8,10 +8,30 @@ export const metadata = {
   description: 'Sign in to manage subscriber content access.',
 }
 
-export default async function AuthPage() {
+interface AuthPageProps {
+  searchParams: Promise<{
+    mode?: string
+    next?: string
+  }>
+}
+
+function getSafeRedirectTarget(nextTarget: string | undefined): string {
+  if (!nextTarget || !nextTarget.startsWith('/')) return '/'
+  if (nextTarget.startsWith('//')) return '/'
+  return nextTarget
+}
+
+function getMode(modeParam: string | undefined): 'sign-in' | 'sign-up' {
+  return modeParam === 'sign-up' ? 'sign-up' : 'sign-in'
+}
+
+export default async function AuthPage({ searchParams }: AuthPageProps) {
+  const { mode, next } = await searchParams
+  const redirectTarget = getSafeRedirectTarget(next)
   const viewer = await getViewerAccess()
+
   if (viewer.isAuthenticated) {
-    redirect('/')
+    redirect(redirectTarget)
   }
 
   return (
@@ -26,7 +46,7 @@ export default async function AuthPage() {
         </h1>
       </div>
 
-      <AuthCard />
+      <AuthCard initialMode={getMode(mode)} redirectTo={redirectTarget} />
     </main>
   )
 }

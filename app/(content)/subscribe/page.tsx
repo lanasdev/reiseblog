@@ -1,7 +1,6 @@
-import SubscriberAccessForm from '@/components/subscriber/SubscriberAccessForm'
+import SubscribeButton from '@/components/subscriber/SubscribeButton'
 import SubscriberLogoutButton from '@/components/subscriber/SubscriberLogoutButton'
 import { getViewerAccess } from '@/lib/auth-session'
-import { getSubscriberAccessCodeHint } from '@/lib/subscriber-access'
 import { CheckCircle2, Lock, Sparkles, UserRound } from 'lucide-react'
 import Link from 'next/link'
 
@@ -12,7 +11,6 @@ export const metadata = {
 
 export default async function SubscribePage() {
   const viewer = await getViewerAccess()
-  const accessCodeHint = getSubscriberAccessCodeHint()
 
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-5 py-10 md:px-8 md:py-14">
@@ -51,14 +49,23 @@ export default async function SubscribePage() {
           <div className="space-y-4">
             <p className="inline-flex items-center gap-2 rounded-md border border-border bg-secondary/50 px-3 py-2 text-sm text-foreground">
               <UserRound className="h-4 w-4" />
-              Sign in to activate subscriber access for your account.
+              Log in if you already have a subscription, or create an account to
+              start one.
             </p>
-            <Link
-              href="/auth"
-              className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
-            >
-              Go to sign in
-            </Link>
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <Link
+                href="/auth?mode=sign-in&next=/subscribe"
+                className="inline-flex h-10 items-center justify-center rounded-md border border-border bg-background px-4 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+              >
+                Log in
+              </Link>
+              <Link
+                href="/auth?mode=sign-up&next=/subscribe"
+                className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
+              >
+                Subscribe for $28
+              </Link>
+            </div>
           </div>
         ) : viewer.isSubscriber ? (
           <div className="space-y-4">
@@ -78,15 +85,11 @@ export default async function SubscribePage() {
           </div>
         ) : (
           <div className="space-y-4">
-            <SubscriberAccessForm submitLabel="Activate subscriber access" />
-            {accessCodeHint && (
-              <p className="rounded-md border border-dashed border-border bg-secondary/40 px-3 py-2 text-xs text-muted-foreground">
-                Local development hint: use{' '}
-                <code className="font-mono text-foreground">{accessCodeHint}</code>{' '}
-                or set <code className="font-mono text-foreground">SUBSCRIBER_ACCESS_CODE</code>{' '}
-                in <code className="font-mono text-foreground">.env.local</code>.
-              </p>
-            )}
+            <p className="text-sm text-muted-foreground">
+              You are logged in. Activate your membership to unlock subscriber
+              stories.
+            </p>
+            <SubscribeButton label="Subscribe for $28" redirectTo="/" />
           </div>
         )}
       </div>

@@ -10,9 +10,13 @@ type Mode = 'sign-in' | 'sign-up'
 
 interface AuthCardProps {
   initialMode?: Mode
+  redirectTo?: string
 }
 
-export default function AuthCard({ initialMode = 'sign-in' }: AuthCardProps) {
+export default function AuthCard({
+  initialMode = 'sign-in',
+  redirectTo = '/',
+}: AuthCardProps) {
   const router = useRouter()
   const [mode, setMode] = useState<Mode>(initialMode)
   const [name, setName] = useState('')
@@ -50,7 +54,7 @@ export default function AuthCard({ initialMode = 'sign-in' }: AuthCardProps) {
         }
       }
 
-      router.replace('/')
+      router.replace(redirectTo)
       router.refresh()
     } catch {
       setError('Unexpected network error. Please try again.')

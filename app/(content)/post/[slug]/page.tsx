@@ -88,7 +88,7 @@ export default async function PostPage({ params }: Props) {
 		return (
 			<PostPageShell>
 				<PostHero post={post} />
-				<PostPaywall post={post} />
+				<PostPaywall post={post} isAuthenticated={viewer.isAuthenticated} />
 				<PostFooter />
 			</PostPageShell>
 		);
