@@ -1,7 +1,7 @@
 "use client"
 
 import type { BlogPost } from "@/lib/types"
-import { MapPin, Clock, Calendar } from "lucide-react"
+import { MapPin, Clock, Calendar, Lock } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { motion } from "motion/react"
@@ -45,7 +45,11 @@ export default function PostCard({
           onClick(post._id)
         }
       }}
-      aria-label={`View post: ${post.title}`}
+      aria-label={
+        post.accessTier === "subscriber"
+          ? `Subscriber-only post: ${post.title}`
+          : `View post: ${post.title}`
+      }
     >
       <div className="flex gap-3 p-3">
         <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-md">
@@ -59,11 +63,22 @@ export default function PostCard({
             blurDataURL={post.coverImageData?.asset?.metadata?.lqip}
           />
           <div className="absolute inset-0 bg-foreground/5" />
+          {post.accessTier === "subscriber" && (
+            <div className="absolute right-1.5 top-1.5 inline-flex items-center gap-1 rounded-full bg-card/90 px-1.5 py-0.5 text-[10px] font-medium text-card-foreground">
+              <Lock className="h-2.5 w-2.5" />
+            </div>
+          )}
         </div>
 
         <div className="flex min-w-0 flex-1 flex-col justify-between">
           <div>
             <div className="mb-1 flex flex-wrap items-center gap-1.5">
+              {post.accessTier === "subscriber" && (
+                <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/15 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-amber-700">
+                  <Lock className="h-2.5 w-2.5" />
+                  Subscriber
+                </span>
+              )}
               {post.tags?.map((tag) => (
                 <span
                   key={tag._id}

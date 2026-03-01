@@ -1,31 +1,46 @@
 import { ImageResponse } from 'next/og'
+import { applyResolvedAccessTier } from '@/lib/post-access'
+import { getPostBySlug } from '@/lib/sanity'
 import { sanityFetch } from '@/sanity/lib/live'
 import {
   PLACEHOLDER_IMAGE,
   postBySlugQuery,
 } from '@/sanity/lib/queries'
 import { urlForOpenGraphImage } from '@/sanity/lib/utils'
-import { notFound } from 'next/navigation'
 
 export const alt = 'Blog post'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
+export const dynamic = 'force-dynamic'
 
 type Props = { params: Promise<{ slug: string }> }
 
 export default async function Image({ params }: Props) {
   const { slug } = await params
-  const { data: post } = await sanityFetch({
-    query: postBySlugQuery,
-    params: { slug, placeholderImage: PLACEHOLDER_IMAGE },
-    stega: false,
-  })
 
-  if (!post) notFound()
+  let resolvedPost: ReturnType<typeof applyResolvedAccessTier> | null = null
+
+  try {
+    const { data: post } = await sanityFetch({
+      query: postBySlugQuery,
+      params: { slug, placeholderImage: PLACEHOLDER_IMAGE },
+      stega: false,
+    })
+    resolvedPost = post ? applyResolvedAccessTier(post) : null
+  } catch {
+    resolvedPost = null
+  }
+
+  if (!resolvedPost) {
+    const fallbackPost = await getPostBySlug(slug)
+    resolvedPost = fallbackPost ? applyResolvedAccessTier(fallbackPost) : null
+  }
+
+  const title = resolvedPost?.title ?? 'Travel story'
+  const excerpt = resolvedPost?.excerpt
 
   const imageUrl =
-    urlForOpenGraphImage(post.coverImageOg) ?? PLACEHOLDER_IMAGE
-  const title = post.title ?? 'Untitled post'
+    urlForOpenGraphImage(resolvedPost?.coverImageOg) ?? PLACEHOLDER_IMAGE
 
   return new ImageResponse(
     (
@@ -57,7 +72,7 @@ export default async function Image({ params }: Props) {
           >
             {title}
           </div>
-          {post.excerpt && (
+          {excerpt && (
             <div
               style={{
                 fontSize: 20,
@@ -69,7 +84,7 @@ export default async function Image({ params }: Props) {
                 WebkitBoxOrient: 'vertical',
               }}
             >
-              {post.excerpt}
+              {excerpt}
             </div>
           )}
         </div>

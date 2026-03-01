@@ -3,36 +3,29 @@ import { Suspense } from "react";
 import PostContent from "@/components/post/PostContent";
 import PostFooter from "@/components/post/PostFooter";
 import PostHero from "@/components/post/PostHero";
+import PostPaywall from "@/components/post/PostPaywall";
 import PostPageShell from "@/components/post/PostPageShell";
 import RelatedPosts from "@/components/post/RelatedPosts";
 import RelatedPostsSkeleton from "@/components/post/RelatedPostsSkeleton";
-import { getPostBySlug, getPosts } from "@/lib/sanity";
+import {
+	applyResolvedAccessTier,
+	canViewPost,
+	isSubscriberOnlyPost,
+} from "@/lib/post-access";
+import { getViewerAccess } from "@/lib/auth-session";
+import { getPostBySlug } from "@/lib/sanity";
 import type { BlogPost } from "@/lib/types";
 import { sanityFetch } from "@/sanity/lib/live";
 import {
 	PLACEHOLDER_IMAGE,
 	postBySlugQuery,
-	slugsByTypeQuery,
 } from "@/sanity/lib/queries";
 
 interface Props {
 	params: Promise<{ slug: string }>;
 }
 
-export async function generateStaticParams() {
-	try {
-		const { data } = await sanityFetch({
-			query: slugsByTypeQuery,
-			params: { type: "post" },
-			stega: false,
-			perspective: "published",
-		});
-		return (data ?? []).map((post: { slug: string }) => ({ slug: post.slug }));
-	} catch {
-		const posts = await getPosts();
-		return posts.map((post) => ({ slug: post.slug }));
-	}
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: Props) {
 	const { slug } = await params;
@@ -42,17 +35,33 @@ export async function generateMetadata({ params }: Props) {
 			params: { slug, placeholderImage: PLACEHOLDER_IMAGE },
 			stega: false,
 		});
-		if (!post) return { title: "Not Found" };
+		const resolvedPost = post ? applyResolvedAccessTier(post) : null;
+		if (!resolvedPost) return { title: "Not Found" };
+		const viewer = await getViewerAccess();
+		if (isSubscriberOnlyPost(resolvedPost) && !viewer.isSubscriber) {
+			return {
+				title: `${resolvedPost.title} - Subscriber only`,
+				description: "This travel story is available to subscribers.",
+			};
+		}
 		return {
-			title: `${post.title} - Reiseblog`,
-			description: post.excerpt,
+			title: `${resolvedPost.title} - Reiseblog`,
+			description: resolvedPost.excerpt,
 		};
 	} catch {
 		const post = await getPostBySlug(slug);
-		if (!post) return { title: "Not Found" };
+		const resolvedPost = post ? applyResolvedAccessTier(post) : null;
+		if (!resolvedPost) return { title: "Not Found" };
+		const viewer = await getViewerAccess();
+		if (isSubscriberOnlyPost(resolvedPost) && !viewer.isSubscriber) {
+			return {
+				title: `${resolvedPost.title} - Subscriber only`,
+				description: "This travel story is available to subscribers.",
+			};
+		}
 		return {
-			title: `${post.title} - Reiseblog`,
-			description: post.excerpt,
+			title: `${resolvedPost.title} - Reiseblog`,
+			description: resolvedPost.excerpt,
 		};
 	}
 }
@@ -66,12 +75,24 @@ export default async function PostPage({ params }: Props) {
 			query: postBySlugQuery,
 			params: { slug, placeholderImage: PLACEHOLDER_IMAGE },
 		});
-		post = data;
+		post = data ? applyResolvedAccessTier(data) : null;
 	} catch {
-		post = await getPostBySlug(slug);
+		const fallbackPost = await getPostBySlug(slug);
+		post = fallbackPost ? applyResolvedAccessTier(fallbackPost) : null;
 	}
 
 	if (!post) notFound();
+	const viewer = await getViewerAccess();
+
+	if (!canViewPost(post, viewer.isSubscriber)) {
+		return (
+			<PostPageShell>
+				<PostHero post={post} />
+				<PostPaywall post={post} isAuthenticated={viewer.isAuthenticated} />
+				<PostFooter />
+			</PostPageShell>
+		);
+	}
 
 	return (
 		<PostPageShell>

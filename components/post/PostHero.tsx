@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, Calendar, Clock, MapPin } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, Lock, MapPin } from "lucide-react";
 import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -60,6 +60,12 @@ export default function PostHero({ post }: { post: BlogPost }) {
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ duration: 0.5, delay: 0.2 }}
 					>
+						{post.accessTier === "subscriber" && (
+							<span className="inline-flex items-center gap-1 rounded-full bg-amber-500 px-3 py-1 text-xs font-medium text-amber-950 uppercase tracking-wider">
+								<Lock className="h-3.5 w-3.5" />
+								Subscriber
+							</span>
+						)}
 						{post.tags?.map((tag) => (
 							<span
 								key={tag._id}

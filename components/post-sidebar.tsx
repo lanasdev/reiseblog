@@ -4,6 +4,7 @@ import { useState } from "react"
 import { PortableText } from "next-sanity"
 import type { PortableTextBlock } from "next-sanity"
 import type { BlogPost, SocialLink } from "@/lib/types"
+import AuthProfileMenu from "@/components/auth/AuthProfileMenu"
 import PostCard from "./post-card"
 import {
   Compass,
@@ -69,18 +70,21 @@ export default function PostSidebar({
     <aside className="flex h-full flex-col bg-background">
       {/* Header */}
       <header className="flex-shrink-0 border-b border-border px-4 py-3 md:px-5 md:py-4">
-        <div className="flex items-center gap-2.5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary">
-            <Compass className="h-4 w-4 text-primary-foreground" aria-hidden="true" />
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary">
+              <Compass className="h-4 w-4 text-primary-foreground" aria-hidden="true" />
+            </div>
+            <div>
+              <h1 className="font-serif text-lg font-bold tracking-tight text-foreground md:text-xl">
+                Reiseblog
+              </h1>
+              <p className="text-[11px] text-muted-foreground tracking-wide uppercase">
+                Geschichten von unterwegs
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="font-serif text-lg font-bold tracking-tight text-foreground md:text-xl">
-              Reiseblog
-            </h1>
-            <p className="text-[11px] text-muted-foreground tracking-wide uppercase">
-              Geschichten von unterwegs
-            </p>
-          </div>
+          <AuthProfileMenu />
         </div>
       </header>
 

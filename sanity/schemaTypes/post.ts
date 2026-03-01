@@ -25,6 +25,21 @@ export const post = defineType({
       type: "text",
     }),
     defineField({
+      name: "accessTier",
+      title: "Access Tier",
+      type: "string",
+      initialValue: "free",
+      options: {
+        list: [
+          { title: "Free", value: "free" },
+          { title: "Subscriber", value: "subscriber" },
+        ],
+        layout: "radio",
+        direction: "horizontal",
+      },
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
       name: "coverImage",
       title: "Cover Image",
       type: "image",
@@ -84,6 +99,14 @@ export const post = defineType({
     }),
   ],
   preview: {
-    select: { title: "title", media: "coverImage" },
+    select: { title: "title", media: "coverImage", accessTier: "accessTier" },
+    prepare(selection) {
+      return {
+        title: selection.title,
+        media: selection.media,
+        subtitle:
+          selection.accessTier === "subscriber" ? "Subscriber only" : "Free",
+      }
+    },
   },
 })

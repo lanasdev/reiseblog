@@ -7,6 +7,7 @@ export const demoPosts: BlogPost[] = [
     slug: "marrakech-hidden-alleys",
     excerpt:
       "Wandering through the labyrinthine medina, where every turn reveals a new world of color, scent, and sound.",
+    accessTier: "free",
     coverImage:
       "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?w=600&h=400&fit=crop",
     date: "2025-11-15",
@@ -25,6 +26,7 @@ export const demoPosts: BlogPost[] = [
     slug: "northern-lights-tromso",
     excerpt:
       "Chasing the aurora borealis through the Arctic night, a dance of emerald light across the polar sky.",
+    accessTier: "subscriber",
     coverImage:
       "https://images.unsplash.com/photo-1483347756197-71ef80e95f73?w=600&h=400&fit=crop",
     date: "2025-10-02",
@@ -43,6 +45,7 @@ export const demoPosts: BlogPost[] = [
     slug: "bangkok-street-food",
     excerpt:
       "From smoky wok stations to sweet mango sticky rice, Bangkok's streets are a never-ending feast for the senses.",
+    accessTier: "free",
     coverImage:
       "https://images.unsplash.com/photo-1504214208698-ea1916a2195a?w=600&h=400&fit=crop",
     date: "2025-09-20",
@@ -61,6 +64,7 @@ export const demoPosts: BlogPost[] = [
     slug: "dolomites-hiking",
     excerpt:
       "Scaling the pale limestone towers of the Italian Alps, where every ridge opens onto a view that steals your breath.",
+    accessTier: "subscriber",
     coverImage:
       "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&h=400&fit=crop",
     date: "2025-08-05",
@@ -79,6 +83,7 @@ export const demoPosts: BlogPost[] = [
     slug: "kyoto-autumn",
     excerpt:
       "Ancient temples framed by crimson maples, the serene beauty of Japan in its most painterly season.",
+    accessTier: "free",
     coverImage:
       "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=600&h=400&fit=crop",
     date: "2025-07-12",
@@ -97,6 +102,7 @@ export const demoPosts: BlogPost[] = [
     slug: "santorini-sunset",
     excerpt:
       "Watching the sun melt into the Aegean from the clifftop village of Oia, painting the white walls in liquid gold.",
+    accessTier: "free",
     coverImage:
       "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=600&h=400&fit=crop",
     date: "2025-06-28",
@@ -115,6 +121,7 @@ export const demoPosts: BlogPost[] = [
     slug: "patagonia-wilderness",
     excerpt:
       "At the edge of the world, where glaciers calve into turquoise lakes and the wind shapes everything it touches.",
+    accessTier: "subscriber",
     coverImage:
       "https://images.unsplash.com/photo-1531761535209-180857e963b9?w=600&h=400&fit=crop",
     date: "2025-05-10",
@@ -133,6 +140,7 @@ export const demoPosts: BlogPost[] = [
     slug: "lisbon-day-trip",
     excerpt:
       "Riding the iconic Tram 28 through sun-drenched hills, past azulejo-tiled facades and the smell of pasteis de nata.",
+    accessTier: "free",
     coverImage:
       "https://images.unsplash.com/photo-1585208798174-6cedd86e019a?w=600&h=400&fit=crop",
     date: "2025-04-18",
