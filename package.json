@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "biome lint .",
     "prisma:generate": "prisma generate",
@@ -78,6 +78,7 @@
     "sanity-plugin-media": "^4.1.1",
     "server-only": "^0.0.1",
     "sonner": "^2.0.7",
+    "stripe": "^20.4.0",
     "tailwind-merge": "^3.5.0",
     "vaul": "^1.1.2",
     "zod": "^4.3.6"
@@ -99,6 +100,7 @@
     "@types/node": "^25.3.0",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
+    "dotenv": "^17.3.1",
     "postcss": "^8.5.6",
     "prisma": "^7.4.1",
     "tailwindcss": "^4.2.1",

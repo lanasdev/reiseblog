@@ -1,7 +1,6 @@
 'use client'
 
 import { LoaderCircle, Sparkles } from 'lucide-react'
-import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 interface SubscribeButtonProps {
@@ -15,11 +14,10 @@ interface SubscribeButtonProps {
 export default function SubscribeButton({
   priceLabel = '$28',
   label,
-  redirectTo,
+  redirectTo = '/',
   unauthenticatedMessage = 'Please sign in to subscribe.',
   className,
 }: SubscribeButtonProps) {
-  const router = useRouter()
   const [error, setError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -30,9 +28,12 @@ export default function SubscribeButton({
     setIsSubmitting(true)
 
     try {
-      const response = await fetch('/api/subscriber/subscribe', {
-        method: 'POST',
-      })
+      const params = new URLSearchParams()
+      if (redirectTo && redirectTo !== '/') {
+        params.set('redirect', redirectTo)
+      }
+      const url = `/api/stripe/create-checkout-session${params.toString() ? `?${params}` : ''}`
+      const response = await fetch(url, { method: 'POST' })
 
       if (!response.ok) {
         const payload = (await response.json().catch(() => null)) as
@@ -44,16 +45,18 @@ export default function SubscribeButton({
           return
         }
 
-        setError(payload?.error ?? 'Unable to start subscription right now.')
+        setError(payload?.error ?? 'Unable to start checkout. Please try again.')
         return
       }
 
-      if (redirectTo) {
-        router.replace(redirectTo)
+      const { url: checkoutUrl } = (await response.json()) as { url?: string }
+      if (checkoutUrl) {
+        window.location.href = checkoutUrl
+        return
       }
-      router.refresh()
+      setError('Unable to start checkout.')
     } catch {
-      setError('Network error while activating your subscription.')
+      setError('Network error. Please try again.')
     } finally {
       setIsSubmitting(false)
     }

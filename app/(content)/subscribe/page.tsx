@@ -9,8 +9,23 @@ export const metadata = {
   description: 'Get full access to subscriber-only travel stories.',
 }
 
-export default async function SubscribePage() {
+function getSafeRedirect(path: string | undefined): string {
+  if (!path || !path.startsWith('/') || path.startsWith('//')) return '/'
+  return path
+}
+
+interface Props {
+  searchParams: Promise<{ redirect?: string }>
+}
+
+export default async function SubscribePage({ searchParams }: Props) {
+  const { redirect: redirectParam } = await searchParams
+  const redirectTo = getSafeRedirect(
+    redirectParam ? decodeURIComponent(redirectParam) : undefined
+  )
   const viewer = await getViewerAccess()
+
+  const subscribeNext = redirectTo === '/' ? '/subscribe' : `/subscribe?redirect=${encodeURIComponent(redirectTo)}`
 
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-5 py-10 md:px-8 md:py-14">
@@ -54,13 +69,13 @@ export default async function SubscribePage() {
             </p>
             <div className="flex flex-col gap-2 sm:flex-row">
               <Link
-                href="/auth?mode=sign-in&next=/subscribe"
+                href={`/auth?mode=sign-in&next=${encodeURIComponent(subscribeNext)}`}
                 className="inline-flex h-10 items-center justify-center rounded-md border border-border bg-background px-4 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
               >
                 Log in
               </Link>
               <Link
-                href="/auth?mode=sign-up&next=/subscribe"
+                href={`/auth?mode=sign-up&next=${encodeURIComponent(subscribeNext)}`}
                 className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
               >
                 Subscribe for $28
@@ -89,7 +104,7 @@ export default async function SubscribePage() {
               You are logged in. Activate your membership to unlock subscriber
               stories.
             </p>
-            <SubscribeButton label="Subscribe for $28" redirectTo="/" />
+            <SubscribeButton label="Subscribe for $28" redirectTo={redirectTo} />
           </div>
         )}
       </div>

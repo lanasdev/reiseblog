@@ -44,13 +44,13 @@ export default function PostPaywall({ post, isAuthenticated }: PostPaywallProps)
             </p>
             <div className="flex flex-col gap-2 sm:flex-row">
               <Link
-                href={`/auth?mode=sign-in&next=/post/${post.slug}`}
+                href={`/auth?mode=sign-in&next=${encodeURIComponent(`/post/${post.slug}`)}`}
                 className="inline-flex h-10 items-center justify-center rounded-md border border-border bg-background px-4 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
               >
                 Log in
               </Link>
               <Link
-                href={`/auth?mode=sign-up&next=/subscribe`}
+                href={`/auth?mode=sign-up&next=${encodeURIComponent(`/subscribe?redirect=${encodeURIComponent(`/post/${post.slug}`)}`)}`}
                 className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
               >
                 Subscribe for $28

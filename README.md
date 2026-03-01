@@ -18,18 +18,30 @@ Open [http://localhost:3000](http://localhost:3000) for the site and [http://loc
 Posts now support an `accessTier` field (`free` or `subscriber`) in Sanity Studio.
 
 - Free users can view all `free` posts.
-- `subscriber` posts render a paywall until an authenticated user starts the paid membership.
+- `subscriber` posts render a paywall until an authenticated user completes a paid subscription.
 
-Authentication now uses Better Auth + Prisma:
+Authentication uses Better Auth + Prisma. Payments use Stripe Checkout (subscriptions).
+
+### Environment variables
 
 - `BETTER_AUTH_URL` (e.g. `http://localhost:3000`)
 - `BETTER_AUTH_SECRET` (required in production)
-- `DATABASE_URL` (hosted Prisma Postgres connection string for Better Auth user/session data)
-- `SUBSCRIBER_LOCKED_POST_SLUGS` (optional comma-separated fallback slugs that stay subscriber-only even before editors update CMS content)
+- `DATABASE_URL` (PostgreSQL connection string)
+- `SUBSCRIBER_LOCKED_POST_SLUGS` (optional comma-separated fallback slugs)
 
-Users can sign in via `/auth` and manage auth/subscription actions from the round profile dropdown in the sidebar header.
+**Stripe (required for subscription payments):**
 
-Prisma setup:
+- `STRIPE_SECRET_KEY` – from [Stripe Dashboard](https://dashboard.stripe.com/apikeys)
+- `STRIPE_WEBHOOK_SECRET` – from Stripe Dashboard → Developers → Webhooks
+- `STRIPE_PRICE_ID` – create a recurring Price for your subscription product in Stripe
+
+Create a webhook endpoint in Stripe pointing to `https://your-domain.com/api/stripe/webhook` and listen for `checkout.session.completed`, `customer.subscription.updated`, and `customer.subscription.deleted`.
+
+For local testing, use [Stripe CLI](https://stripe.com/docs/stripe-cli) to forward webhooks: `stripe listen --forward-to localhost:3000/api/stripe/webhook`.
+
+Users sign in via `/auth` and subscribe via Stripe Checkout. After payment they are redirected back to the post or home.
+
+### Prisma setup
 
 ```bash
 pnpm prisma:generate
